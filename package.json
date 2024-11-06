@@ -1,0 +1,41 @@
+{
+  "name": "nextjs14-trpc-react-query",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.22.0",
+    "@radix-ui/react-slot": "^1.1.0",
+    "@tanstack/react-query": "^4.18.0",
+    "@tanstack/react-query-devtools": "^4.18.0",
+    "@trpc/client": "^10.45.2",
+    "@trpc/react-query": "^10.45.2",
+    "@trpc/server": "^10.45.2",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.454.0",
+    "next": "14.1.4",
+    "react": "^18",
+    "react-dom": "^18",
+    "superjson": "^2.2.1",
+    "tailwind-merge": "^2.5.4",
+    "tailwindcss-animate": "^1.0.7",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@tanstack/eslint-plugin-query": "^5.59.7",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "autoprefixer": "^10.0.1",
+    "postcss": "^8",
+    "prisma": "^5.22.0",
+    "tailwindcss": "^3.3.0",
+    "typescript": "^5"
+  }
+}
