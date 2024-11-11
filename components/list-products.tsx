@@ -7,6 +7,8 @@ import ProductCard from "./product-card";
 import Link from "next/link";
 import ProductCardSkeleton from "./product-card-skeleton";
 import Pagination from "./products-pagination";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 interface SearchParams {
   query?: string;
@@ -15,12 +17,29 @@ interface SearchParams {
   category_id?: string[];
 }
 
-const ListProducts = ({ initialParams }: { initialParams: SearchParams }) => {
-  const { data, isLoading } = trpc.getFilteredProducts.useQuery({
-    query: initialParams.query,
-    sizes: initialParams.sizes,
-    colors: initialParams.colors,
-    category_id: initialParams.category_id,
+export default function ListProducts({
+  initialParams,
+}: {
+  initialParams: SearchParams;
+}) {
+  const searchParams = useSearchParams();
+  const [currentParams, setCurrentParams] =
+    useState<SearchParams>(initialParams);
+
+  // Update params when URL changes
+  useEffect(() => {
+    const newParams: SearchParams = {
+      query: searchParams.get("query") || undefined,
+      sizes: searchParams.getAll("sizes"),
+      colors: searchParams.getAll("colors"),
+      category_id: searchParams.getAll("category_id"),
+    };
+    setCurrentParams(newParams);
+  }, [searchParams]);
+
+  const { data, isLoading } = trpc.getFilteredProducts.useQuery(currentParams, {
+    // Enable automatic refetching when params change
+    keepPreviousData: true,
   });
 
   return (
@@ -30,7 +49,7 @@ const ListProducts = ({ initialParams }: { initialParams: SearchParams }) => {
       {isLoading ? (
         <>
           <div className="mt-6 grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 sm:gap-y-10 lg:grid-cols-4">
-            {[Array(6)].map((_, index) => (
+            {[...Array(6)].map((_, index) => (
               <ProductCardSkeleton key={index} />
             ))}
           </div>
@@ -81,6 +100,4 @@ const ListProducts = ({ initialParams }: { initialParams: SearchParams }) => {
       )}
     </>
   );
-};
-
-export default ListProducts;
+}
