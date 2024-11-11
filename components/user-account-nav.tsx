@@ -8,13 +8,6 @@ const UserAccountNav = () => {
     <SignedIn>
       <UserButton>
         <UserButton.MenuItems>
-          {/*    <UserButton.Link
-            label="Carrito"
-            labelIcon={
-              <ShoppingCart className="text-blue-600 h-4 w-4 mr-1.5" />
-            }
-            href="/shopping-cart"
-          /> */}
           <UserButton.Link
             label="Dashboard"
             labelIcon={<AppWindow className="text-blue-600 h-4 w-4 mr-1.5" />}

@@ -27,8 +27,14 @@ import Image from "next/image";
 import { useCartStore } from "@/store/cartStore";
 import { useState } from "react";
 import CartSheet from "./cart-sheet";
+import { SignedOut, SignInButton } from "@clerk/nextjs";
+import UserAccountNav from "./user-account-nav";
 
-export default function Navbar() {
+export default function Navbar({
+  currentUser,
+}: {
+  currentUser: string | null;
+}) {
   const navLinks = [
     { href: "/", label: "Inicio", icon: Home },
     { href: "/products/search", label: "Productos", icon: ShoppingBag },
@@ -129,67 +135,72 @@ export default function Navbar() {
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="text-primary hover:text-primary/65 transition-colors font-medium"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
+          {currentUser && (
+            <nav className="hidden lg:flex items-center gap-8">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="text-primary hover:text-primary/65 transition-colors font-medium"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+          )}
 
           {/* Desktop Icons */}
           <div className="flex items-center gap-4">
-            <div className="hidden lg:flex items-center gap-4">
-              <Sheet open={isCartOpen} onOpenChange={setIsCartOpen}>
-                <SheetTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="text-primary hover:text-primary/65 transition-colors relative"
+            {currentUser && (
+              <div className="hidden lg:flex items-center gap-4">
+                <Sheet open={isCartOpen} onOpenChange={setIsCartOpen}>
+                  <SheetTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="text-primary hover:text-primary/65 transition-colors relative"
+                    >
+                      <ShoppingBag className="h-6 w-6" />
+                      {items.length > 0 && (
+                        <span className="absolute -top-1 -right-1 bg-accent text-primary/85 text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                          {items.length}
+                        </span>
+                      )}
+                      <span className="sr-only">Shopping Cart</span>
+                    </Button>
+                  </SheetTrigger>
+                  <SheetContent
+                    side="right"
+                    className="w-[300px] sm:w-1/4 bg-[#252C37] border-none"
                   >
-                    <ShoppingBag className="h-6 w-6" />
-                    {items.length > 0 && (
-                      <span className="absolute -top-1 -right-1 bg-accent text-primary/85 text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                        {items.length}
-                      </span>
-                    )}
-                    <span className="sr-only">Shopping Cart</span>
-                  </Button>
-                </SheetTrigger>
-                <SheetContent
-                  side="right"
-                  className="w-[300px] sm:w-1/4 bg-[#252C37] border-none"
-                >
-                  <CartSheet />
-                </SheetContent>
-              </Sheet>
+                    <CartSheet />
+                  </SheetContent>
+                </Sheet>
 
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-primary hover:text-primary/65 transition-colors relative"
-              >
-                <Heart className="h-6 w-6" />
-                <span className="absolute -top-1 -right-1 bg-accent text-primary/85 text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                  2
-                </span>
-                <span className="sr-only">Favorites</span>
-              </Button>
-            </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-primary hover:text-primary/65 transition-colors relative"
+                >
+                  <Heart className="h-6 w-6" />
+                  <span className="absolute -top-1 -right-1 bg-accent text-primary/85 text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    2
+                  </span>
+                  <span className="sr-only">Favorites</span>
+                </Button>
+              </div>
+            )}
 
             {/* User Button */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-primary hover:text-primary/65 transition-colors"
-            >
-              <User className="h-6 w-6" />
-              <span className="sr-only">Account</span>
-            </Button>
+            {currentUser ? (
+              <UserAccountNav />
+            ) : (
+              <SignedOut>
+                <SignInButton>
+                  <p>Acceder</p>
+                </SignInButton>
+              </SignedOut>
+            )}
           </div>
         </div>
       </div>
