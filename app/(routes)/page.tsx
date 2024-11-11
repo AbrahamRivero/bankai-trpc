@@ -3,6 +3,7 @@ import { dehydrate } from "@tanstack/react-query";
 import Hydrate from "@/lib/hydrate-client";
 import Banner from "@/components/banner";
 import Categories from "@/components/categories";
+import LatestProducts from "@/components/latest-products";
 
 export default async function Home() {
   const helpers = createSSRHelper();
@@ -14,11 +15,11 @@ export default async function Home() {
       <Hydrate state={dehydrate(helpers.queryClient)}>
         <main>
           <Banner />
-          
-          <Categories />
-          {/* 
 
-          <Products />
+          <Categories />
+
+          <LatestProducts />
+          {/* 
 
           <Events /> */}
         </main>
