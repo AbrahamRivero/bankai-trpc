@@ -120,7 +120,7 @@ export default function Navbar() {
           <div className="flex flex-1 max-w-md mx-4">
             <div className="relative w-full">
               <Input
-                className="w-full bg-gray-200 border-primary-foreground/20 pl-10 pr-4 py-2 text-primary-foreground placeholder:text-primary/65 focus-visible:ring-2 focus-visible:ring-accent transition-all"
+                className="w-full bg-gray-200 border-primary-foreground/20 pl-10 pr-4 py-2 text-primary placeholder:text-primary/65 focus-visible:ring-2 focus-visible:ring-accent transition-all"
                 placeholder="Buscar producto..."
                 type="search"
               />

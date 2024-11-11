@@ -1,7 +1,8 @@
-
 import { createSSRHelper } from "../api/trpc/trpc-router";
 import { dehydrate } from "@tanstack/react-query";
 import Hydrate from "@/lib/hydrate-client";
+import Banner from "@/components/banner";
+import Categories from "@/components/categories";
 
 export default async function Home() {
   const helpers = createSSRHelper();
@@ -12,9 +13,10 @@ export default async function Home() {
     <div className="min-h-screen bg-white">
       <Hydrate state={dehydrate(helpers.queryClient)}>
         <main>
-    {/*       <Banner />
-
+          <Banner />
+          
           <Categories />
+          {/* 
 
           <Products />
 
