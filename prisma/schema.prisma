@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,11 +8,162 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-model User {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  role      String   @default("user")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model cart_items {
+  id         BigInt    @id @default(autoincrement())
+  cart_id    BigInt?
+  variant_id BigInt?
+  quantity   Int
+  carts      carts?    @relation(fields: [cart_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  variants   variants? @relation(fields: [variant_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([variant_id], map: "idx_cart_items_variant_id")
+}
+
+model carts {
+  id         BigInt       @id @default(autoincrement())
+  user_id    BigInt?
+  created_at DateTime?    @default(now()) @db.Timestamptz(6)
+  cart_items cart_items[]
+  users      users?       @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([user_id], map: "idx_carts_user_id")
+}
+
+model categories {
+  id       BigInt     @id @default(autoincrement())
+  name     String
+  img_url  String?
+  products products[]
+}
+
+model event_categories {
+  id      BigInt   @id @default(autoincrement())
+  name    String
+  img_url String?
+  events  events[]
+}
+
+model events {
+  id               BigInt            @id @default(autoincrement())
+  name             String
+  description      String?
+  date             DateTime?         @db.Date
+  cover_image      String?
+  category_id      BigInt?
+  location_id      BigInt?
+  event_categories event_categories? @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  locations        locations?        @relation(fields: [location_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model locations {
+  id      BigInt   @id @default(autoincrement())
+  name    String
+  address String
+  events  events[]
+}
+
+model order_audit {
+  id                 BigInt    @id @default(autoincrement())
+  order_id           BigInt?
+  changed_at         DateTime? @default(now()) @db.Timestamptz(6)
+  change_description String?
+  orders             orders?   @relation(fields: [order_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model order_items {
+  id         BigInt    @id @default(autoincrement())
+  order_id   BigInt?
+  variant_id BigInt?
+  quantity   Int
+  price      Decimal   @db.Decimal(10, 2)
+  orders     orders?   @relation(fields: [order_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  variants   variants? @relation(fields: [variant_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([variant_id], map: "idx_order_items_variant_id")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model orders {
+  id               BigInt        @id @default(autoincrement())
+  user_id          BigInt?
+  order_date       DateTime?     @default(now()) @db.Timestamptz(6)
+  status           String?
+  total_amount     Decimal       @db.Decimal(10, 2)
+  shipping_address String?
+  order_audit      order_audit[]
+  order_items      order_items[]
+  users            users?        @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([user_id], map: "idx_orders_user_id")
+}
+
+model price_history {
+  id         BigInt    @id @default(autoincrement())
+  variant_id BigInt?
+  price      Decimal   @db.Decimal(10, 2)
+  start_date DateTime? @default(now()) @db.Timestamptz(6)
+  end_date   DateTime? @db.Timestamptz(6)
+  variants   variants? @relation(fields: [variant_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model products {
+  id                                                             BigInt             @id @default(autoincrement())
+  name                                                           String
+  description                                                    String?
+  category_id                                                    BigInt?
+  base_price                                                     Decimal            @db.Decimal(10, 2)
+  base_cost                                                      Decimal            @db.Decimal(10, 2)
+  categories                                                     categories?        @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  related_products_related_products_product_idToproducts         related_products[] @relation("related_products_product_idToproducts")
+  related_products_related_products_related_product_idToproducts related_products[] @relation("related_products_related_product_idToproducts")
+  variants                                                       variants[]
+}
+
+model related_products {
+  id                                                     BigInt    @id @default(autoincrement())
+  product_id                                             BigInt?
+  related_product_id                                     BigInt?
+  products_related_products_product_idToproducts         products? @relation("related_products_product_idToproducts", fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  products_related_products_related_product_idToproducts products? @relation("related_products_related_product_idToproducts", fields: [related_product_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model reviews {
+  id         BigInt    @id @default(autoincrement())
+  variant_id BigInt?
+  review     String?
+  rating     Int?
+  variants   variants? @relation(fields: [variant_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model users {
+  id      BigInt   @id @default(autoincrement())
+  name    String
+  email   String   @unique
+  phone   String?
+  address String?
+  carts   carts[]
+  orders  orders[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model variants {
+  id                  BigInt          @id @default(autoincrement())
+  product_id          BigInt?
+  colors              String[]
+  sizes               String[]
+  price               Decimal         @db.Decimal(10, 2)
+  cost                Decimal         @db.Decimal(10, 2)
+  discount            Decimal?        @db.Decimal(5, 2)
+  discount_start_date DateTime?       @db.Date
+  discount_end_date   DateTime?       @db.Date
+  permanent_discount  Boolean?        @default(false)
+  status              String?
+  stock               Int?
+  image               String?
+  cart_items          cart_items[]
+  order_items         order_items[]
+  price_history       price_history[]
+  reviews             reviews[]
+  products            products?       @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }

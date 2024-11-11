@@ -8,7 +8,7 @@ export const createUserHandler = async ({
   input: CreateUserInput;
 }) => {
   try {
-    const user = await prisma.user.create({
+    const user = await prisma.users.create({
       data: input,
     });
 
@@ -36,7 +36,7 @@ export const getUsersHandler = async ({
     const take = limit || 10;
     const skip = (page - 1) * limit;
 
-    const users = await prisma.user.findMany({
+    const users = await prisma.users.findMany({
       skip,
       take,
     });
