@@ -2,18 +2,20 @@ import { createSSRHelper } from "@/app/api/trpc/trpc-router";
 import { dehydrate } from "@tanstack/react-query";
 import ListProducts from "@/components/list-products";
 import Hydrate from "@/lib/hydrate-client";
+export interface SearchParams {
+  query?: string;
+  sizes?: string[];
+  colors?: string[];
+  category_id?: string[];
+}
 
-export default async function SearchPage({
-  query,
-  sizes,
-  colors,
-  category_id,
-}: {
-  query?: string | undefined;
-  sizes?: string[] | undefined;
-  colors?: string[] | undefined;
-  category_id?: string[] | undefined;
-}) {
+interface SearchPageProps {
+  searchParams: SearchParams;
+}
+
+export default async function SearchPage({ searchParams }: SearchPageProps) {
+  const { query, sizes, colors, category_id } = searchParams;
+
   const helpers = createSSRHelper();
   await helpers.getFilteredProducts.prefetch({
     query,
@@ -34,7 +36,7 @@ export default async function SearchPage({
           </p>
         </div>
         <Hydrate state={dehydrate(helpers.queryClient)}>
-          <ListProducts initialParams={{ query, sizes, colors, category_id }} />
+          <ListProducts initialParams={searchParams} />
         </Hydrate>
       </div>
     </div>

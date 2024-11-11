@@ -107,7 +107,12 @@ export const getFilteredProductsHandler = async ({
 }) => {
   try {
     const { category_id, colors, query, sizes } = filterQuery;
-    const category = Number(category_id);
+
+    const ensureArray = (value: string | string[] | undefined): string[] => {
+      if (Array.isArray(value)) return value;
+      if (typeof value === "string") return [value];
+      return [];
+    };
 
     const products = await prisma.products.findMany({
       where: {
@@ -120,13 +125,19 @@ export const getFilteredProductsHandler = async ({
                 ],
               }
             : {},
-          sizes && sizes.length > 0
-            ? { variants: { some: { sizes: { hasSome: sizes } } } }
+          sizes
+            ? { variants: { some: { sizes: { hasSome: ensureArray(sizes) } } } }
             : {},
-          colors && colors.length > 0
-            ? { variants: { some: { colors: { hasSome: colors } } } }
+          colors
+            ? {
+                variants: {
+                  some: { colors: { hasSome: ensureArray(colors) } },
+                },
+              }
             : {},
-          category_id ? { category_id: category } : {},
+          category_id
+            ? { category_id: { in: ensureArray(category_id).map(Number) } }
+            : {},
         ],
       },
       select: {

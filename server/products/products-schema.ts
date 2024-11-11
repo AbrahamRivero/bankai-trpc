@@ -8,9 +8,7 @@ import {
   array,
   coerce,
   enum as enum_,
-  record,
   union,
-  undefined,
 } from "zod";
 
 const variantSchema = array(
@@ -88,9 +86,9 @@ export const createProductSchema = object({
 
 export const productsFilterQuery = object({
   query: string().optional(),
-  sizes: array(string()).optional(),
-  colors: array(string()).optional(),
-  category_id: array(string()).optional(),
+  sizes: union([array(string()), string()]).optional(),
+  colors: union([array(string()), string()]).optional(),
+  category_id: union([array(string()), string()]).optional(),
 });
 
 export type CreateProductInput = TypeOf<typeof createProductSchema>;

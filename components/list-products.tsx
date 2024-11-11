@@ -9,26 +9,20 @@ import ProductCardSkeleton from "./product-card-skeleton";
 import Pagination from "./products-pagination";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-
-interface SearchParams {
-  query?: string;
-  sizes?: string[];
-  colors?: string[];
-  category_id?: string[];
-}
+import { ProductsFilterQueryInput } from "@/server/products/products-schema";
 
 export default function ListProducts({
   initialParams,
 }: {
-  initialParams: SearchParams;
+  initialParams: ProductsFilterQueryInput;
 }) {
   const searchParams = useSearchParams();
   const [currentParams, setCurrentParams] =
-    useState<SearchParams>(initialParams);
+    useState<ProductsFilterQueryInput>(initialParams);
 
   // Update params when URL changes
   useEffect(() => {
-    const newParams: SearchParams = {
+    const newParams: ProductsFilterQueryInput = {
       query: searchParams.get("query") || undefined,
       sizes: searchParams.getAll("sizes"),
       colors: searchParams.getAll("colors"),
@@ -38,8 +32,8 @@ export default function ListProducts({
   }, [searchParams]);
 
   const { data, isLoading } = trpc.getFilteredProducts.useQuery(currentParams, {
-    // Enable automatic refetching when params change
     keepPreviousData: true,
+    refetchInterval: 15000,
   });
 
   return (

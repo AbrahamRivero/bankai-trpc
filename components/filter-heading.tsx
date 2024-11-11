@@ -84,15 +84,16 @@ const FilterHeading = () => {
     value: string,
     checked: boolean | string
   ) => {
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams(searchParams.toString());
     const currentFilters = params.getAll(filterId);
 
     if (checked) {
       params.append(filterId, value);
     } else {
-      const newFilters = currentFilters.filter((filter) => filter !== value);
       params.delete(filterId);
-      newFilters.forEach((filter) => params.append(filterId, filter));
+      currentFilters
+        .filter((v) => v !== value)
+        .forEach((v) => params.append(filterId, v));
     }
 
     router.push(`?${params.toString()}`);

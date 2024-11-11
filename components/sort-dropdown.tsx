@@ -25,7 +25,7 @@ const SortDropdown = ({
   const currentSort = searchParams.get("sort");
 
   const handleSort = (value: string) => {
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams(searchParams.toString());
 
     // Si ya existe un sort, lo reemplazamos
     if (currentSort?.length) {
