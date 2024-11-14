@@ -13,11 +13,11 @@ export default function CartSheet() {
   return (
     <div className="flex flex-col h-full">
       <SheetHeader>
-        <SheetTitle className="text-primary-foreground">Tu Carrito</SheetTitle>
+        <SheetTitle className="text-primary">Tu Carrito</SheetTitle>
       </SheetHeader>
       <div className="flex-grow overflow-auto py-4 flex justify-center items-center">
         {items.length === 0 ? (
-          <p className="text-primary-foreground">Tu carrito está vacío</p>
+          <p className="text-primary">Tu carrito está vacío</p>
         ) : (
           items.map((item) => (
             <div

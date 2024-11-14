@@ -11,6 +11,7 @@ import {
   Info,
   Phone,
   BookOpen,
+  LogIn,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
@@ -109,7 +110,7 @@ export default function Navbar({
                   </SheetTrigger>
                   <SheetContent
                     side="right"
-                    className="w-[300px] sm:w-1/4 bg-[#252C37] border-none"
+                    className="w-[300px] sm:w-1/4 bg-primary-foreground border-none"
                   >
                     <CartSheet />
                   </SheetContent>
@@ -135,19 +136,18 @@ export default function Navbar({
           </div>
 
           {/* Desktop Navigation */}
-          {currentUser && (
-            <nav className="hidden lg:flex items-center gap-8">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="text-primary hover:text-primary/65 transition-colors font-medium"
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </nav>
-          )}
+
+          <nav className="hidden lg:flex items-center gap-8">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-primary hover:text-primary/65 transition-colors font-medium"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
 
           {/* Desktop Icons */}
           <div className="flex items-center gap-4">
@@ -171,7 +171,7 @@ export default function Navbar({
                   </SheetTrigger>
                   <SheetContent
                     side="right"
-                    className="w-[300px] sm:w-1/4 bg-[#252C37] border-none"
+                    className="w-[300px] sm:w-1/4 bg-primary-foreground border-none"
                   >
                     <CartSheet />
                   </SheetContent>
@@ -197,7 +197,10 @@ export default function Navbar({
             ) : (
               <SignedOut>
                 <SignInButton>
-                  <p>Acceder</p>
+                  <Button variant="ghost" size="sm">
+                    <LogIn className="w-4 h-4 mr-0.5" />
+                    Acceder
+                  </Button>
                 </SignInButton>
               </SignedOut>
             )}
