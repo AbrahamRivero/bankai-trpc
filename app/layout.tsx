@@ -4,8 +4,6 @@ import "./globals.css";
 import { TrpcProvider } from "@/lib/trpc-provider";
 import { ClerkProvider } from "@clerk/nextjs";
 import { esES } from "@clerk/localizations";
-import { auth } from "@clerk/nextjs/server";
-import Navbar from "@/components/navbar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -44,13 +42,12 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { userId } = await auth();
   return (
     <html lang="en">
       <body className={inter.className}>
         <TrpcProvider>
-          <ClerkProvider localization={esES}>
-            <Navbar currentUser={userId} />
+          {" "}
+          <ClerkProvider localization={esES} dynamic>
             {children}
           </ClerkProvider>
         </TrpcProvider>

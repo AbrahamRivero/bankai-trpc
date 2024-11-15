@@ -28,14 +28,10 @@ import Image from "next/image";
 import { useCartStore } from "@/store/cartStore";
 import { useState } from "react";
 import CartSheet from "./cart-sheet";
-import { SignedOut, SignInButton } from "@clerk/nextjs";
+import { SignedOut, SignInButton, useAuth } from "@clerk/nextjs";
 import UserAccountNav from "./user-account-nav";
 
-export default function Navbar({
-  currentUser,
-}: {
-  currentUser: string | null;
-}) {
+export default function Navbar() {
   const navLinks = [
     { href: "/", label: "Inicio", icon: Home },
     { href: "/products/search", label: "Productos", icon: ShoppingBag },
@@ -46,6 +42,8 @@ export default function Navbar({
 
   const { items } = useCartStore();
   const [isCartOpen, setIsCartOpen] = useState(false);
+
+  const { isSignedIn } = useAuth();
 
   return (
     <header className="w-full border-b border-gray-200 bg-white/75 backdrop-blur-lg transition-all sticky top-0 z-50 shadow-lg">
@@ -151,7 +149,7 @@ export default function Navbar({
 
           {/* Desktop Icons */}
           <div className="flex items-center gap-4">
-            {currentUser && (
+            {isSignedIn && (
               <div className="hidden lg:flex items-center gap-4">
                 <Sheet open={isCartOpen} onOpenChange={setIsCartOpen}>
                   <SheetTrigger asChild>
@@ -192,7 +190,7 @@ export default function Navbar({
             )}
 
             {/* User Button */}
-            {currentUser ? (
+            {isSignedIn ? (
               <UserAccountNav />
             ) : (
               <SignedOut>
