@@ -73,7 +73,11 @@ const filters = [
   },
 ];
 
-const FilterHeading = () => {
+const FilterHeading = ({
+  isCategoriesPage = false,
+}: {
+  isCategoriesPage?: boolean;
+}) => {
   const { data } = trpc.getCategories.useQuery();
 
   const router = useRouter();
@@ -123,45 +127,47 @@ const FilterHeading = () => {
               <SheetTitle className="text-lg font-medium">Filters</SheetTitle>
             </SheetHeader>
             <div className="mt-4">
-              <Accordion type="single" collapsible>
-                <AccordionItem value="category_id">
-                  <AccordionTrigger>
-                    Categorías
-                    {getFilterCount("category_id") > 0 && (
-                      <Badge variant="secondary" className="ml-2">
-                        {getFilterCount("category_id")}
-                      </Badge>
-                    )}
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <div className="space-y-4">
-                      {data?.map((option) => (
-                        <div key={option.id} className="flex items-center">
-                          <Checkbox
-                            id={`filter-mobile-${option.id}-${option.name}`}
-                            checked={searchParams
-                              .getAll("category_id")
-                              .includes(String(option.id))}
-                            onCheckedChange={(checked: string | boolean) =>
-                              handleFilterChange(
-                                "category_id",
-                                String(option.id),
-                                checked
-                              )
-                            }
-                          />
-                          <label
-                            htmlFor={`filter-mobile-${option.id}-${option.name}`}
-                            className="ml-3 text-sm text-muted-foreground"
-                          >
-                            {option.name}
-                          </label>
-                        </div>
-                      ))}
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
+              {!isCategoriesPage && (
+                <Accordion type="single" collapsible>
+                  <AccordionItem value="category_id">
+                    <AccordionTrigger>
+                      Categorías
+                      {getFilterCount("category_id") > 0 && (
+                        <Badge variant="secondary" className="ml-2">
+                          {getFilterCount("category_id")}
+                        </Badge>
+                      )}
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <div className="space-y-4">
+                        {data?.map((option) => (
+                          <div key={option.id} className="flex items-center">
+                            <Checkbox
+                              id={`filter-mobile-${option.id}-${option.name}`}
+                              checked={searchParams
+                                .getAll("category_id")
+                                .includes(String(option.id))}
+                              onCheckedChange={(checked: string | boolean) =>
+                                handleFilterChange(
+                                  "category_id",
+                                  String(option.id),
+                                  checked
+                                )
+                              }
+                            />
+                            <label
+                              htmlFor={`filter-mobile-${option.id}-${option.name}`}
+                              className="ml-3 text-sm text-muted-foreground"
+                            >
+                              {option.name}
+                            </label>
+                          </div>
+                        ))}
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              )}
               {filters.map((section) => (
                 <Accordion type="single" collapsible key={section.name}>
                   <AccordionItem value={section.id}>
@@ -210,49 +216,51 @@ const FilterHeading = () => {
         <div className="hidden sm:block">
           <div className="flow-root">
             <div className="flex items-center divide-x divide-muted">
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    className="text-base font-medium pl-4 pr-2"
-                  >
-                    Categorías
-                    <ChevronDown className="ml-1 h-4 w-4" />
-                    {getFilterCount("category_id") > 0 && (
-                      <Badge variant="secondary" className="ml-2">
-                        {getFilterCount("category_id")}
-                      </Badge>
-                    )}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-56 p-4" align="start">
-                  <div className="space-y-4">
-                    {data?.map((option) => (
-                      <div key={option.id} className="flex items-center">
-                        <Checkbox
-                          id={`filter-${option.id}-${option.name}`}
-                          checked={searchParams
-                            .getAll("category_id")
-                            .includes(String(option.id))}
-                          onCheckedChange={(checked: string | boolean) =>
-                            handleFilterChange(
-                              "category_id",
-                              String(option.id),
-                              checked
-                            )
-                          }
-                        />
-                        <label
-                          htmlFor={`filter-${option.id}-${option.name}`}
-                          className="ml-3 text-sm font-medium"
-                        >
-                          {option.name}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
-                </PopoverContent>
-              </Popover>
+              {!isCategoriesPage && (
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className="text-base font-medium pl-4 pr-2"
+                    >
+                      Categorías
+                      <ChevronDown className="ml-1 h-4 w-4" />
+                      {getFilterCount("category_id") > 0 && (
+                        <Badge variant="secondary" className="ml-2">
+                          {getFilterCount("category_id")}
+                        </Badge>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-56 p-4" align="start">
+                    <div className="space-y-4">
+                      {data?.map((option) => (
+                        <div key={option.id} className="flex items-center">
+                          <Checkbox
+                            id={`filter-${option.id}-${option.name}`}
+                            checked={searchParams
+                              .getAll("category_id")
+                              .includes(String(option.id))}
+                            onCheckedChange={(checked: string | boolean) =>
+                              handleFilterChange(
+                                "category_id",
+                                String(option.id),
+                                checked
+                              )
+                            }
+                          />
+                          <label
+                            htmlFor={`filter-${option.id}-${option.name}`}
+                            className="ml-3 text-sm font-medium"
+                          >
+                            {option.name}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              )}
               {filters.map((section) => (
                 <Popover key={section.name}>
                   <PopoverTrigger asChild>

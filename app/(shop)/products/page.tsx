@@ -2,6 +2,7 @@ import { createSSRHelper } from "@/app/api/trpc/trpc-router";
 import { dehydrate } from "@tanstack/react-query";
 import ListProducts from "@/components/list-products";
 import Hydrate from "@/lib/hydrate-client";
+
 export interface SearchParams {
   query?: string;
   sizes?: string[];
@@ -9,11 +10,11 @@ export interface SearchParams {
   category_id?: string[];
 }
 
-interface SearchPageProps {
+interface ProductsPageProps {
   searchParams: SearchParams;
 }
 
-export default async function SearchPage({ searchParams }: SearchPageProps) {
+export default async function ProductsPage({ searchParams }: ProductsPageProps) {
   const { query, sizes, colors, category_id } = searchParams;
 
   const helpers = createSSRHelper();

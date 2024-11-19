@@ -1,13 +1,13 @@
 import { PhoneIcon, MailIcon, MapPinIcon } from "lucide-react";
 import { JSX, SVGProps } from "react";
 import Link from "next/link";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 
 const Footer = () => {
   const navigation = {
     links: [
       { name: "Inicio", href: "/" },
-      { name: "Productos", href: "/products/search" },
+      { name: "Productos", href: "/products" },
       { name: "Eventos", href: "/events" },
       { name: "Sobre Nosotros", href: "/about" },
       { name: "Contáctenos", href: "/contact" },

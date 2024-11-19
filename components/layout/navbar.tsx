@@ -23,18 +23,18 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Separator } from "./ui/separator";
+import { Separator } from "../ui/separator";
 import Image from "next/image";
 import { useCartStore } from "@/store/cartStore";
 import { useState } from "react";
-import CartSheet from "./cart-sheet";
+import CartSheet from "../cart-sheet";
 import { SignedOut, SignInButton, useAuth } from "@clerk/nextjs";
 import UserAccountNav from "./user-account-nav";
 
 export default function Navbar() {
   const navLinks = [
     { href: "/", label: "Inicio", icon: Home },
-    { href: "/products/search", label: "Productos", icon: ShoppingBag },
+    { href: "/products", label: "Productos", icon: ShoppingBag },
     { href: "/about", label: "Sobre nosotros", icon: Info },
     { href: "/contact", label: "Contacto", icon: Phone },
     { href: "/events", label: "Eventos", icon: BookOpen },

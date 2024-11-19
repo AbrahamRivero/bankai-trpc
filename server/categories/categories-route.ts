@@ -1,8 +1,12 @@
 import {
   createCategoriesHandler,
+  getCategoriesByIdHandler,
   getCategoriesHandler,
 } from "./categories-controller";
-import { createCategorySchema } from "./categories-schema";
+import {
+  createCategorySchema,
+  searchCategoryByIdSchema,
+} from "./categories-schema";
 import { t } from "@/lib/trpc-server";
 
 const categoriesRouter = t.router({
@@ -10,6 +14,9 @@ const categoriesRouter = t.router({
     .input(createCategorySchema)
     .mutation(({ input }) => createCategoriesHandler({ input })),
   getCategories: t.procedure.query(() => getCategoriesHandler()),
+  getCategoryById: t.procedure
+    .input(searchCategoryByIdSchema)
+    .query(({ input }) => getCategoriesByIdHandler({ id: input.id })),
 });
 
 export default categoriesRouter;

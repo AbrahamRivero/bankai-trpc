@@ -1,4 +1,4 @@
-import { TypeOf, object, string } from "zod";
+import { TypeOf, coerce, number, object, string } from "zod";
 
 export const createCategorySchema = object({
   name: string({ required_error: "Este campo es requerido." })
@@ -10,4 +10,9 @@ export const createCategorySchema = object({
     }),
 });
 
+export const searchCategoryByIdSchema = object({
+  id: number({ required_error: "Este campo es requerido." }),
+});
+
 export type CreateCategoryInput = TypeOf<typeof createCategorySchema>;
+export type SearchCategoryByIdInput = TypeOf<typeof searchCategoryByIdSchema>;
