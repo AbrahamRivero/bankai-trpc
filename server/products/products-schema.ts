@@ -51,7 +51,7 @@ const variantSchema = array(
       .number({ required_error: "Este campo es requerido." })
       .int()
       .nonnegative(),
-    image: string().url().nullable(),
+    image: string().url().nullable().optional(),
   })
 );
 
