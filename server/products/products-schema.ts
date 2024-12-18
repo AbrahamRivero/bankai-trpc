@@ -21,12 +21,10 @@ const variantSchema = array(
       .transform((value) => value ?? []),
     price: coerce
       .number({ required_error: "Este campo es requerido." })
-      .positive()
-      .multipleOf(0.01),
+      .gt(0, { message: "Introduzca un precio superior a 0." }),
     cost: coerce
       .number({ required_error: "Este campo es requerido." })
-      .positive()
-      .multipleOf(0.01),
+      .gt(0, { message: "Introduzca un costo superior a 0." }),
     discount: coerce
       .number()
       .min(0, {
@@ -36,22 +34,20 @@ const variantSchema = array(
       .max(100, {
         message:
           "Debe establecer un valor para el descuento igual o inferior a 100%.",
-      })
-      .multipleOf(0.01),
+      }),
     discountDateRange: object({
       from: date().optional(),
       to: date().optional(),
     }).optional(),
-    permanent_discount: boolean().nullable().default(false),
+    permanent_discount: boolean(),
     status: enum_(["active", "draft", "archived"], {
       required_error: "Este campo es requerido.",
       invalid_type_error: "Seleccione el status del producto.",
     }),
     stock: coerce
       .number({ required_error: "Este campo es requerido." })
-      .int()
-      .nonnegative(),
-    image: string().url().nullable(),
+      .gt(-1, { message: "Introduzca la cantidad disponible del producto." }),
+    img_url: string().url().optional(),
   })
 );
 
@@ -71,16 +67,17 @@ export const createProductSchema = object({
       message:
         "La descripción del producto no puede tener más de 500 caracteres.",
     }),
-  base_price: number({ required_error: "Este campo es requerido." })
-    .positive()
-    .multipleOf(0.01),
-  base_cost: number({ required_error: "Este campo es requerido." })
-    .positive()
-    .multipleOf(0.01),
-  category_id: number({ required_error: "Este campo es requerido." })
-    .int()
-    .positive()
-    .nullable(),
+  base_price: coerce
+    .number({ required_error: "Este campo es requerido." })
+    .gt(0, {
+      message: "Introduzca un precio base superior a 0.",
+    }),
+  base_cost: coerce
+    .number({ required_error: "Este campo es requerido." })
+    .gt(0, { message: "Introduzca un costo base superior a 0." }),
+  category_id: string({ required_error: "Este campo es requerido." }).min(2, {
+    message: "Debe seleccionar una categoría.",
+  }),
   variants: variantSchema,
 });
 
@@ -88,7 +85,7 @@ export const productsFilterQuery = object({
   query: string().optional(),
   sizes: union([array(string()), string()]).optional(),
   colors: union([array(string()), string()]).optional(),
-  category_id: union([array(string()), string()]).optional(),
+  category_id: string().optional(),
 });
 
 export type CreateProductInput = TypeOf<typeof createProductSchema>;

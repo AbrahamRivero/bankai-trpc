@@ -1,15 +1,15 @@
-import { Heart, Link, ShoppingCart } from "lucide-react";
+import { Link, ShoppingCart } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { useCartStore } from "@/store/cartStore";
 import NextLink from "next/link";
 import DiscountBadge from "./discount-badge";
 import CountdownTimer from "./countdown-timer";
-import { useCartStore } from "@/store/cartStore";
 
 interface ProductCardProps {
   name: string;
-  variantId: bigint;
+  variantId: string;
   href: string;
-  image_url: string | null;
+  img_url: string | null;
   price: number;
   category?: string;
   discountPercentage: number;
@@ -20,7 +20,7 @@ const ProductCard = ({
   name,
   variantId,
   href,
-  image_url,
+  img_url,
   category,
   price,
   discountPercentage,
@@ -43,9 +43,7 @@ const ProductCard = ({
       <div className="relative aspect-h-3 aspect-w-4 overflow-hidden rounded-lg bg-gray-100">
         <img
           alt={name}
-          src={
-            image_url ? image_url : "https://placehold.co/600x400?text=No+Image"
-          }
+          src={img_url ? img_url : "https://placehold.co/600x400?text=No+Image"}
           className="object-cover object-center"
         />
         {discountPercentage > 0 && (
@@ -76,13 +74,6 @@ const ProductCard = ({
               <ShoppingCart className="h-4 w-4" />
             </Button>
             <div className="flex space-x-2">
-              <Button
-                size="icon"
-                variant="secondary"
-                aria-label="Add to favorites"
-              >
-                <Heart className="h-4 w-4" />
-              </Button>
               <NextLink
                 href={href}
                 className={buttonVariants({
@@ -101,13 +92,6 @@ const ProductCard = ({
             <ShoppingCart className="h-4 w-4" />
           </Button>
           <div className="flex space-x-2">
-            <Button
-              size="icon"
-              variant="secondary"
-              aria-label="Add to favorites"
-            >
-              <Heart className="h-4 w-4" />
-            </Button>
             <NextLink
               href={href}
               className={buttonVariants({ size: "icon", variant: "secondary" })}

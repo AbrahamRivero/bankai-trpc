@@ -2,14 +2,14 @@
 
 import { trpc } from "@/lib/trpc";
 import { buttonVariants } from "./ui/button";
-import FilterHeading from "./filter-heading";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { ProductsFilterQueryInput } from "@/server/products/products-schema";
 import ProductCard from "./product-card";
 import Link from "next/link";
 import ProductCardSkeleton from "./product-card-skeleton";
 import Pagination from "./products-pagination";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { ProductsFilterQueryInput } from "@/server/products/products-schema";
+import FilterHeading from "./layout/filters/filter-heading";
 
 export default function ListProducts({
   initialParams,
@@ -26,7 +26,7 @@ export default function ListProducts({
       query: searchParams.get("query") || undefined,
       sizes: searchParams.getAll("sizes"),
       colors: searchParams.getAll("colors"),
-      category_id: searchParams.getAll("category_id"),
+      category_id: searchParams.get("category_id") || undefined,
     };
     setCurrentParams(newParams);
   }, [searchParams]);
@@ -62,7 +62,7 @@ export default function ListProducts({
                   name={product.name}
                   href={`/products/${product.id}/${variant.id}`}
                   category={product.categories?.name}
-                  image_url={variant.image}
+                  img_url={variant.img_url}
                   price={Number(variant.price)}
                   discountPercentage={Number(variant.discount)}
                   discountEndDate={variant.discount_end_date}

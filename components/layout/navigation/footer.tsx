@@ -1,7 +1,7 @@
 import { PhoneIcon, MailIcon, MapPinIcon } from "lucide-react";
 import { JSX, SVGProps } from "react";
 import Link from "next/link";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 
 const Footer = () => {
   const navigation = {

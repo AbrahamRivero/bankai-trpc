@@ -32,7 +32,7 @@ export const createProductsHandler = async ({
               sizes,
               status,
               stock,
-              image,
+              img_url,
             } = variant;
             return {
               cost,
@@ -45,7 +45,7 @@ export const createProductsHandler = async ({
               sizes,
               status,
               stock,
-              image,
+              img_url,
             };
           }),
         },
@@ -80,7 +80,7 @@ export const getLatestProductsHandler = async () => {
             cost: true,
             discount: true,
             discount_end_date: true,
-            image: true,
+            img_url: true,
             stock: true,
           },
         },
@@ -108,38 +108,38 @@ export const getFilteredProductsHandler = async ({
   try {
     const { category_id, colors, query, sizes } = filterQuery;
 
-    const ensureArray = (value: string | string[] | undefined): string[] => {
-      if (Array.isArray(value)) return value;
-      if (typeof value === "string") return [value];
-      return [];
-    };
+    const whereClause: any = {};
+
+    if (query && typeof query === "string" && query.trim() !== "") {
+      whereClause.OR = [
+        { name: { contains: query, mode: "insensitive" } },
+        { description: { contains: query, mode: "insensitive" } },
+      ];
+    }
+
+    if (sizes && Array.isArray(sizes) && sizes.length > 0) {
+      whereClause.variants = {
+        some: { sizes: { hasSome: sizes } },
+      };
+    }
+
+    if (colors && Array.isArray(colors) && colors.length > 0) {
+      if (!whereClause.variants) {
+        whereClause.variants = { some: {} };
+      }
+      whereClause.variants.some.colors = { hasSome: colors };
+    }
+
+    if (
+      category_id &&
+      typeof category_id === "string" &&
+      category_id.trim() !== ""
+    ) {
+      whereClause.category_id = category_id;
+    }
 
     const products = await prisma.products.findMany({
-      where: {
-        AND: [
-          query
-            ? {
-                OR: [
-                  { name: { contains: query, mode: "insensitive" } },
-                  { description: { contains: query, mode: "insensitive" } },
-                ],
-              }
-            : {},
-          sizes
-            ? { variants: { some: { sizes: { hasSome: ensureArray(sizes) } } } }
-            : {},
-          colors
-            ? {
-                variants: {
-                  some: { colors: { hasSome: ensureArray(colors) } },
-                },
-              }
-            : {},
-          category_id
-            ? { category_id: { in: ensureArray(category_id).map(Number) } }
-            : {},
-        ],
-      },
+      where: whereClause,
       select: {
         id: true,
         name: true,

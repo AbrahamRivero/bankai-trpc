@@ -6,7 +6,7 @@ import ProductCardSkeleton from "./product-card-skeleton";
 import Link from "next/link";
 import { buttonVariants } from "./ui/button";
 import Pagination from "./products-pagination";
-import FilterHeading from "./filter-heading";
+import FilterHeading from "./layout/filters/filter-heading";
 
 const CategoriesPageContent = ({ id }: { id: number }) => {
   const { data, isLoading } = trpc.getCategoryById.useQuery({ id: id });

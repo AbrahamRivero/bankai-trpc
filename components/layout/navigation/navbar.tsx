@@ -4,7 +4,6 @@ import {
   Search,
   ShoppingBag,
   Heart,
-  User,
   Menu,
   Home,
   ShoppingCart,
@@ -14,7 +13,6 @@ import {
   LogIn,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -23,13 +21,14 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Separator } from "../ui/separator";
-import Image from "next/image";
+import { Separator } from "../../ui/separator";
 import { useCartStore } from "@/store/cartStore";
 import { useState } from "react";
-import CartSheet from "../cart-sheet";
 import { SignedOut, SignInButton, useAuth } from "@clerk/nextjs";
+import CartSheet from "../../cart-sheet";
 import UserAccountNav from "./user-account-nav";
+import Link from "next/link";
+import Image from "next/image";
 
 export default function Navbar() {
   const navLinks = [
@@ -113,10 +112,6 @@ export default function Navbar() {
                     <CartSheet />
                   </SheetContent>
                 </Sheet>
-                <button className="flex items-center text-primary-foreground hover:text-accent transition-colors">
-                  <Heart className="h-5 w-5 mr-4" />
-                  <span>Favoritos</span>
-                </button>
               </div>
             </SheetContent>
           </Sheet>
@@ -174,18 +169,6 @@ export default function Navbar() {
                     <CartSheet />
                   </SheetContent>
                 </Sheet>
-
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="text-primary hover:text-primary/65 transition-colors relative"
-                >
-                  <Heart className="h-6 w-6" />
-                  <span className="absolute -top-1 -right-1 bg-accent text-primary/85 text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                    2
-                  </span>
-                  <span className="sr-only">Favorites</span>
-                </Button>
               </div>
             )}
 

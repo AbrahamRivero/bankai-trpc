@@ -34,7 +34,7 @@ const LatestProducts = () => {
                   name={product.name}
                   href={`/products/${product.id}/${variant.id}`}
                   category={product.categories?.name}
-                  image_url={variant.image}
+                  img_url={variant.img_url}
                   price={Number(variant.price)}
                   discountPercentage={Number(variant.discount)}
                   discountEndDate={variant.discount_end_date}
