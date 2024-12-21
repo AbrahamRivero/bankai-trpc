@@ -41,16 +41,16 @@ import {
 } from "@/components/ui/dialog";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useState, useCallback, useEffect } from "react";
-import { Label } from "./ui/label";
-import { Switch } from "./ui/switch";
+import { Label } from "../ui/label";
+import { Switch } from "../ui/switch";
 import { motion } from "framer-motion";
 import { HexColorPicker } from "react-colorful";
 import { cn } from "@/lib/utils";
 import { trpc } from "@/lib/trpc";
-import { DateRangePicker } from "./date-range-picker";
-import { Textarea } from "./ui/textarea";
+import { DateRangePicker } from "../date-range-picker";
+import { Textarea } from "../ui/textarea";
 import { DASHBOARD_PRODUCTS_URL } from "@/lib/constants";
-import { createProductSchema } from "../server/products/products-schema";
+import { createProductSchema } from "../../server/products/products-schema";
 import Link from "next/link";
 
 const CreateProductForm = () => {

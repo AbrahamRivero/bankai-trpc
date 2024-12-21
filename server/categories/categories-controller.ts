@@ -1,17 +1,19 @@
-import prisma from "@/prisma/prisma-client";
 import { TRPCError } from "@trpc/server";
 import { CreateCategoryInput } from "./categories-schema";
+import prisma from "@/prisma/prisma-client";
 
 export const createCategoriesHandler = async ({
   input,
 }: {
   input: CreateCategoryInput;
 }) => {
-  const { name } = input;
+  const { name, type, img_url } = input;
   try {
     const category = await prisma.categories.create({
       data: {
         name,
+        type,
+        img_url,
       },
     });
 
@@ -37,7 +39,7 @@ export const getCategoriesHandler = async () => {
   }
 };
 
-export const getCategoriesByIdHandler = async ({ id }: { id: number }) => {
+export const getCategoriesByIdHandler = async ({ id }: { id: string }) => {
   try {
     const category = await prisma.categories.findFirst({
       where: { id: { equals: id } },
@@ -52,7 +54,7 @@ export const getCategoriesByIdHandler = async ({ id }: { id: number }) => {
             variants: {
               select: {
                 id: true,
-                image: true,
+                img_url: true,
                 price: true,
                 discount: true,
                 discount_end_date: true,

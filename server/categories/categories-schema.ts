@@ -1,4 +1,4 @@
-import { TypeOf, coerce, number, object, string } from "zod";
+import { TypeOf, enum as enum_, object, string } from "zod";
 
 export const createCategorySchema = object({
   name: string({ required_error: "Este campo es requerido." })
@@ -8,10 +8,15 @@ export const createCategorySchema = object({
     .max(50, {
       message: "El nombre de la categoría no puede tener más de 50 caracteres.",
     }),
+  img_url: string().url().optional(),
+  type: enum_(["product", "event"], {
+    required_error: "Este campo es requerido.",
+    invalid_type_error: "Seleccione el tipo de categoría.",
+  }),
 });
 
 export const searchCategoryByIdSchema = object({
-  id: number({ required_error: "Este campo es requerido." }),
+  id: string({ required_error: "Este campo es requerido." }),
 });
 
 export type CreateCategoryInput = TypeOf<typeof createCategorySchema>;

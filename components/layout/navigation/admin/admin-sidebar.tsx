@@ -24,11 +24,12 @@ import { TeamSwitcher } from "./team-switcher";
 import { NavMain } from "./nav-main";
 import { NavUser } from "./nav-user";
 import {
-  DASHBOARD_BASE_URL,
   DASHBOARD_CATEGORIES_URL,
   DASHBOARD_EVENTS_URL,
   DASHBOARD_ORDERS_URL,
   DASHBOARD_PRODUCTS_URL,
+  DASHBOARD_LOCATIONS_URL,
+  DASHBOARD_SETTINGS_URL,
 } from "@/lib/constants";
 
 // This is sample data.
@@ -109,25 +110,41 @@ const data = {
       ],
     },
     {
+      title: "Localizaciones",
+      url: DASHBOARD_LOCATIONS_URL,
+      icon: Map,
+      isActive: true,
+      items: [
+        {
+          title: "Listar Localizaciones",
+          url: DASHBOARD_LOCATIONS_URL,
+        },
+        {
+          title: "Añadir Localización",
+          url: `${DASHBOARD_LOCATIONS_URL}/create`,
+        },
+      ],
+    },
+    {
       title: "Ajustes",
-      url: `/${DASHBOARD_BASE_URL}/settings`,
+      url: DASHBOARD_SETTINGS_URL,
       icon: Settings2,
       items: [
         {
           title: "Logo",
-          url: `/${DASHBOARD_BASE_URL}/settings/logo`,
+          url: `/${DASHBOARD_SETTINGS_URL}/logo`,
         },
         {
           title: "Banner Principal",
-          url: `/${DASHBOARD_BASE_URL}/settings/main-banner`,
+          url: `/${DASHBOARD_SETTINGS_URL}/main-banner`,
         },
         {
           title: "Banner Secundario",
-          url: `/${DASHBOARD_BASE_URL}/settings/secondary-banner`,
+          url: `/${DASHBOARD_SETTINGS_URL}/secondary-banner`,
         },
         {
           title: "Promociones",
-          url: `/${DASHBOARD_BASE_URL}/settings/promotions`,
+          url: `/${DASHBOARD_SETTINGS_URL}/promotions`,
         },
       ],
     },
