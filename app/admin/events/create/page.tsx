@@ -1,16 +1,19 @@
 import { dehydrate } from "@tanstack/react-query";
 import { createSSRHelper } from "@/app/api/trpc/trpc-router";
 import Hydrate from "@/lib/hydrate-client";
+import CreateEventForm from "@/components/forms/create-event-form";
 
-export default async function ProductsPage() {
+export default async function EventsPage() {
   const helpers = createSSRHelper();
-  await helpers.getCategories.prefetch();
-  await helpers.getLatestProducts.prefetch();
+  await helpers.getCategoriesByType.prefetch({ type: "event" });
+  await helpers.getLocations.prefetch();
 
   return (
     <div className="min-h-screen bg-white">
       <Hydrate state={dehydrate(helpers.queryClient)}>
-        <main>Create Products Page</main>
+        <main>
+          <CreateEventForm />
+        </main>
       </Hydrate>
     </div>
   );
