@@ -7,7 +7,7 @@ import LatestProducts from "@/components/latest-products";
 
 export default async function Home() {
   const helpers = createSSRHelper();
-  await helpers.getCategories.prefetch();
+  await helpers.getCategoriesByType.prefetch({ type: "product" });
   await helpers.getLatestProducts.prefetch();
 
   return (
