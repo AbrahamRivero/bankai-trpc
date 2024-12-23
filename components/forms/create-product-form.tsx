@@ -5,15 +5,23 @@ import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
-import { Save, Loader2, Plus, X, Trash2, Check } from "lucide-react";
+import {
+  Save,
+  Loader2,
+  Plus,
+  X,
+  Trash2,
+  Check,
+  ChevronsUpDown,
+} from "lucide-react";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormDescription,
   FormMessage,
+  FormLabel,
 } from "@/components/ui/form";
 import {
   Card,
@@ -39,6 +47,18 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import {
+  Command,
+  CommandInput,
+  CommandList,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+  CommandSeparator,
+  CommandShortcut,
+  CommandDialog,
+} from "../ui/command";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useState, useCallback, useEffect } from "react";
 import { Label } from "../ui/label";
@@ -152,7 +172,9 @@ const CreateProductForm = () => {
     [form]
   );
 
-  const { data } = trpc.getCategories.useQuery();
+  const { data: categories } = trpc.getCategoriesByType.useQuery({
+    type: "product",
+  });
 
   return (
     <Form {...form}>
@@ -230,28 +252,64 @@ const CreateProductForm = () => {
                           control={form.control}
                           name="category_id"
                           render={({ field }) => (
-                            <FormItem>
+                            <FormItem className="flex flex-col justify-end">
                               <FormLabel>Categoría</FormLabel>
-                              <Select
-                                onValueChange={field.onChange}
-                                defaultValue={field.value}
-                              >
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Selecciona una categoría" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  {data?.map((category) => (
-                                    <SelectItem
-                                      key={category.id}
-                                      value={category.id}
+                              <Popover>
+                                <PopoverTrigger asChild>
+                                  <FormControl>
+                                    <Button
+                                      variant="outline"
+                                      role="combobox"
+                                      className={cn(
+                                        "justify-between",
+                                        !field.value && "text-muted-foreground"
+                                      )}
                                     >
-                                      {category.name}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
+                                      {field.value
+                                        ? categories?.find(
+                                            (category) =>
+                                              category.id === field.value
+                                          )?.name
+                                        : "Seleccione una categoría"}
+                                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                    </Button>
+                                  </FormControl>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-[200px] p-0">
+                                  <Command>
+                                    <CommandInput placeholder="Busca una categoría..." />
+                                    <CommandList>
+                                      <CommandEmpty>
+                                        No hay resultados.
+                                      </CommandEmpty>
+                                      <CommandGroup>
+                                        {categories?.map((category) => (
+                                          <CommandItem
+                                            value={category.id}
+                                            key={category.id}
+                                            onSelect={() => {
+                                              form.setValue(
+                                                "category_id",
+                                                category.id
+                                              );
+                                            }}
+                                          >
+                                            {category.name}
+                                            <Check
+                                              className={cn(
+                                                "ml-auto",
+                                                category.id === field.value
+                                                  ? "opacity-100"
+                                                  : "opacity-0"
+                                              )}
+                                            />
+                                          </CommandItem>
+                                        ))}
+                                      </CommandGroup>
+                                    </CommandList>
+                                  </Command>
+                                </PopoverContent>
+                              </Popover>
                               <FormMessage />
                             </FormItem>
                           )}

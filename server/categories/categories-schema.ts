@@ -19,5 +19,12 @@ export const searchCategoryByIdSchema = object({
   id: string({ required_error: "Este campo es requerido." }),
 });
 
+export const filterCategoriesByTypeSchema = object({
+  type: string({ required_error: "Este campo es requerido." }),
+});
+
 export type CreateCategoryInput = TypeOf<typeof createCategorySchema>;
 export type SearchCategoryByIdInput = TypeOf<typeof searchCategoryByIdSchema>;
+export type FilterCategoriesByTypeInput = TypeOf<
+  typeof filterCategoriesByTypeSchema
+>;

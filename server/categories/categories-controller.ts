@@ -39,7 +39,26 @@ export const getCategoriesHandler = async () => {
   }
 };
 
-export const getCategoriesByIdHandler = async ({ id }: { id: string }) => {
+export const getCategoriesByTypeHandler = async ({
+  categoryType,
+}: {
+  categoryType: string;
+}) => {
+  try {
+    const categories = await prisma.categories.findMany({
+      where: { type: { equals: categoryType } },
+    });
+
+    return categories;
+  } catch (err: any) {
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: err.message,
+    });
+  }
+};
+
+export const getCategoryByIdHandler = async ({ id }: { id: string }) => {
   try {
     const category = await prisma.categories.findFirst({
       where: { id: { equals: id } },
