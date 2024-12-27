@@ -1,4 +1,6 @@
 /* URLS */
+export const SHOP_BASE_URL = "/";
+
 export const DASHBOARD_BASE_URL = "/admin";
 export const DASHBOARD_PRODUCTS_URL = `${DASHBOARD_BASE_URL}/products`;
 export const DASHBOARD_ORDERS_URL = `${DASHBOARD_BASE_URL}/orders`;

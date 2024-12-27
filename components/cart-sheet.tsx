@@ -1,70 +1,94 @@
 "use client";
 
-import { useCartStore } from "@/store/cartStore";
-import { SheetHeader, SheetTitle } from "./ui/sheet";
+import { SheetHeader, SheetTitle, SheetClose } from "./ui/sheet";
 import { Button } from "./ui/button";
-import { X } from "lucide-react";
+import { CartItem } from "./cart-item";
+import { useToast } from "@/hooks/use-toast";
 import { Separator } from "./ui/separator";
+import useCartStore from "@/store/cartStore";
 
 export default function CartSheet() {
-  const { items, removeItem, clearCart, getTotalItems, getTotalPrice } =
-    useCartStore();
+  const { items, clearCart, getTotalItems, getTotalPrice } = useCartStore();
+
+  const { toast } = useToast();
+
+  const handleCheckout = () => {
+    const products = items
+      .map((item) => item.name + ` x${item.quantity}`)
+      .join(", ");
+
+    const message = `Hola, me interesan ${
+      items.length > 1 && items.length !== 0
+        ? "estos productos"
+        : "este producto"
+    }: ${products}`;
+
+    const text = encodeURIComponent(message);
+
+    try {
+      window.open(`https://wa.me/58113443?text=${text}`, "_blank");
+    } catch (error: any) {
+      toast({ title: "Error", description: error });
+      return;
+    }
+
+    toast({ description: "Enviando mensaje!" });
+  };
 
   return (
     <div className="flex flex-col h-full">
       <SheetHeader>
         <SheetTitle className="text-primary">Tu Carrito</SheetTitle>
       </SheetHeader>
-      <div className="flex-grow overflow-auto py-4 flex justify-center items-center">
+      <div className="flex-grow overflow-auto py-4 flex justify-center items-center flex-wrap content-start">
         {items.length === 0 ? (
           <p className="text-primary">Tu carrito está vacío</p>
         ) : (
-          items.map((item) => (
-            <div
-              key={item.id}
-              className="flex justify-between items-center mb-4"
-            >
-              <div>
-                <p className="text-primary-foreground">{item.name}</p>
-                <p className="text-sm text-primary-foreground/70">
-                  Cantidad: {item.quantity}
-                </p>
-              </div>
-              <div className="flex items-center">
-                <p className="text-primary-foreground mr-2">
-                  ${(item.price * item.quantity).toFixed(2)}
-                </p>
-                <Button
-                  onClick={() => removeItem(item.id)}
-                  variant="destructive"
-                  size="sm"
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
+          items.map(({ id, name, price, quantity, img_url }) => (
+            <CartItem
+              key={id}
+              id={id}
+              name={name}
+              price={price}
+              quantity={quantity}
+              img_url={img_url}
+            />
           ))
         )}
       </div>
-      {items.length > 0 && (
-        <div className="mt-auto">
-          <Separator className="my-4 bg-primary-foreground/20" />
-          <div className="flex justify-between mb-4">
-            <p className="text-primary-foreground">Total:</p>
-            <p className="text-primary-foreground font-bold">
-              ${getTotalPrice().toFixed(2)}
+      <Separator />
+      <div className="px-4 py-6 sm:px-6">
+        {items.length > 0 && (
+          <>
+            <div className="flex justify-between text-base font-medium text-gray-900">
+              <p>Subtotal</p>
+              <p>{`$${getTotalPrice().toFixed(2)}`}</p>
+            </div>
+            <div className="flex justify-between text-base font-medium text-gray-900">
+              <p>Cant. Productos</p>
+              <p>{getTotalItems()}</p>
+            </div>
+            <p className="mt-0.5 text-sm text-gray-500">
+              El costo del servicio a domicilio es acordado con el vendedor.
             </p>
-          </div>
-          <Button
-            onClick={clearCart}
-            variant="destructive"
-            className="w-full mb-2"
+            <div className="mt-6">
+              <Button onClick={handleCheckout} size="lg" className="w-full">
+                Contactar
+              </Button>
+            </div>
+          </>
+        )}
+
+        <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
+          <SheetClose
+            type="button"
+            className="font-medium text-indigo-600 hover:text-indigo-500"
           >
-            Vaciar Carrito
-          </Button>
-          <Button className="w-full">Proceder al Pago</Button>
+            Continuar Comprando
+            <span aria-hidden="true"> &rarr;</span>
+          </SheetClose>
         </div>
-      )}
+      </div>
     </div>
   );
 }

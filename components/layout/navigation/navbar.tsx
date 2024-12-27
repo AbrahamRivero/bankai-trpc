@@ -3,7 +3,6 @@
 import {
   Search,
   ShoppingBag,
-  Heart,
   Menu,
   Home,
   ShoppingCart,
@@ -22,13 +21,13 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Separator } from "../../ui/separator";
-import { useCartStore } from "@/store/cartStore";
 import { useState } from "react";
 import { SignedOut, SignInButton, useAuth } from "@clerk/nextjs";
 import CartSheet from "../../cart-sheet";
 import UserAccountNav from "./user-account-nav";
 import Link from "next/link";
 import Image from "next/image";
+import useCartStore from "@/store/cartStore";
 
 export default function Navbar() {
   const navLinks = [
@@ -153,7 +152,7 @@ export default function Navbar() {
                       size="icon"
                       className="text-primary hover:text-primary/65 transition-colors relative"
                     >
-                      <ShoppingBag className="h-6 w-6" />
+                      <ShoppingCart className="h-6 w-6" />
                       {items.length > 0 && (
                         <span className="absolute -top-1 -right-1 bg-accent text-primary/85 text-xs rounded-full w-5 h-5 flex items-center justify-center">
                           {items.length}
@@ -164,7 +163,7 @@ export default function Navbar() {
                   </SheetTrigger>
                   <SheetContent
                     side="right"
-                    className="w-[300px] sm:w-1/4 bg-primary-foreground border-none"
+                    className="w-[300px] sm:w-3/4 bg-primary-foreground border-none p-4"
                   >
                     <CartSheet />
                   </SheetContent>

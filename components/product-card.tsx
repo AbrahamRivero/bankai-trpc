@@ -1,9 +1,9 @@
 import { Link, ShoppingCart } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { useCartStore } from "@/store/cartStore";
 import NextLink from "next/link";
 import DiscountBadge from "./discount-badge";
 import CountdownTimer from "./countdown-timer";
+import useCartStore, { CartItem } from "@/store/cartStore";
 
 interface ProductCardProps {
   name: string;
@@ -36,7 +36,17 @@ const ProductCard = ({
     return finalPrice;
   };
 
-  const addItem = useCartStore((state) => state.addItem);
+  const { addItem } = useCartStore();
+
+  const handleAddItem = (item: CartItem) => {
+    addItem({
+      id: item.id,
+      name: item.name,
+      price: item.price,
+      quantity: 1,
+      img_url: item.img_url,
+    });
+  };
 
   return (
     <div className="group relative">
@@ -63,11 +73,12 @@ const ProductCard = ({
               variant="secondary"
               aria-label="Add to cart"
               onClick={() =>
-                addItem({
+                handleAddItem({
                   id: variantId,
-                  name: name,
-                  price: price,
+                  name,
+                  price,
                   quantity: 1,
+                  img_url,
                 })
               }
             >
@@ -88,7 +99,20 @@ const ProductCard = ({
           </div>
         </div>
         <div className="absolute bottom-2 left-2 right-2 z-20 hidden justify-between opacity-0 transition-opacity md:flex md:group-hover:opacity-100">
-          <Button size="icon" variant="secondary" aria-label="Add to cart">
+          <Button
+            size="icon"
+            variant="secondary"
+            aria-label="Add to cart"
+            onClick={() =>
+              handleAddItem({
+                id: variantId,
+                name,
+                price,
+                quantity: 1,
+                img_url,
+              })
+            }
+          >
             <ShoppingCart className="h-4 w-4" />
           </Button>
           <div className="flex space-x-2">

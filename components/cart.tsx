@@ -1,9 +1,9 @@
 // components/Cart.tsx
 "use client";
 
-import { useCartStore } from "@/store/cartStore";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import useCartStore from "@/store/cartStore";
 
 export default function Cart() {
   const { items, removeItem, clearCart, getTotalItems, getTotalPrice } =
