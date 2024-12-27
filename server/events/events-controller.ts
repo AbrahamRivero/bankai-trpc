@@ -1,7 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import { CreateEventInput, EventFilterQueryInput } from "./events-schema";
 import prisma from "@/prisma/prisma-client";
-import { filterQuery } from "../user-schema";
 
 export const createEventHandler = async ({
   input,
@@ -24,7 +23,7 @@ export const createEventHandler = async ({
         description,
         date,
         event_img,
-        cover_price,
+        cover_price: Number(cover_price),
         category_id,
         location_id,
       },
@@ -42,6 +41,34 @@ export const createEventHandler = async ({
 export const getEventsHandler = async () => {
   try {
     const events = await prisma.events.findMany();
+
+    return events;
+  } catch (err: any) {
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: err.message,
+    });
+  }
+};
+
+export const getLatestEventsHandler = async () => {
+  try {
+    const events = await prisma.events.findMany({
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        date: true,
+        event_img: true,
+        cover_price: true,
+        locations: { select: { name: true, address: true } },
+        slug: true,
+      },
+      orderBy: {
+        date: "desc",
+      },
+      take: 8,
+    });
 
     return events;
   } catch (err: any) {

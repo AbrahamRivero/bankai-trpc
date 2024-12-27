@@ -5,6 +5,39 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export function formatDateEvents(dateStr: Date) {
+  const months = [
+    "Enero",
+    "Febrero",
+    "Marzo",
+    "Abril",
+    "Mayo",
+    "Junio",
+    "Julio",
+    "Agosto",
+    "Septiembre",
+    "Octubre",
+    "Noviembre",
+    "Diciembre",
+  ];
+
+  const day = dateStr.getDate();
+  const month = months[dateStr.getMonth()];
+  const year = dateStr.getFullYear();
+
+  return `${day} de ${month}, ${year}`;
+}
+
+export const formatTo12Hours = (date: Date) => {
+  const hours = date?.getHours();
+  const minutes = date?.getMinutes();
+  const ampm = hours >= 23 ? "PM" : "AM";
+  const formattedHours = hours % 12 || 12; // Converts 0 to 12
+  const formattedMinutes = minutes.toString().padStart(2, "0"); //Add leading zero if needed
+
+  return `${formattedHours}:${formattedMinutes} ${ampm}`;
+};
+
 export const generatePagination = (currentPage: number, totalPages: number) => {
   // If the total number of pages is 7 or less,
   // display all pages without any ellipsis.

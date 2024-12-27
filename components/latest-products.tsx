@@ -18,7 +18,7 @@ const LatestProducts = () => {
         <h1 className="text-xl font-bold">Nuestros productos</h1>
         <Link
           className="flex items-center whitespace-nowrap text-sm font-medium text-primary hover:text-primary/75"
-          href="/products/search"
+          href="/products"
         >
           Mostrar más
           <ArrowRight className="w-4 h-4 ml-2" />

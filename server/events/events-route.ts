@@ -4,6 +4,7 @@ import {
   createEventHandler,
   getEventByIdHandler,
   getEventsHandler,
+  getLatestEventsHandler,
 } from "./events-controller";
 
 const eventsRouter = t.router({
@@ -11,6 +12,7 @@ const eventsRouter = t.router({
     .input(createEventSchema)
     .mutation(({ input }) => createEventHandler({ input })),
   getEvents: t.procedure.query(() => getEventsHandler()),
+  getLatestEvents: t.procedure.query(() => getLatestEventsHandler()),
   getEventById: t.procedure
     .input(eventFilterQuery)
     .query(({ input }) => getEventByIdHandler({ eventFilterQuery: input })),

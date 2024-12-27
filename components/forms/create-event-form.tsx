@@ -17,6 +17,7 @@ import {
   CalendarIcon,
   Check,
   ChevronsUpDown,
+  Clock,
   Loader2,
   Save,
 } from "lucide-react";
@@ -43,6 +44,14 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
+import { useState } from "react";
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+} from "../ui/select";
 import Link from "next/link";
 
 const CreateEventForm = () => {
@@ -66,7 +75,7 @@ const CreateEventForm = () => {
   });
   const { data: locations } = trpc.getLocations.useQuery();
 
-  console.log(typeof form.setValue);
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
 
   return (
     <Form {...form}>
@@ -343,7 +352,7 @@ const CreateEventForm = () => {
                           name="date"
                           render={({ field }) => (
                             <FormItem className="flex flex-col justify-end">
-                              <FormLabel>Fecha del Evento</FormLabel>
+                              <FormLabel>Fecha y Hora</FormLabel>
                               <Popover>
                                 <PopoverTrigger asChild>
                                   <FormControl>
@@ -355,9 +364,9 @@ const CreateEventForm = () => {
                                       )}
                                     >
                                       {field.value ? (
-                                        format(field.value, "LLL dd, y")
+                                        format(field.value, "PPP HH:mm")
                                       ) : (
-                                        <span>Escoge una fecha</span>
+                                        <span>Seleccionar fecha y hora</span>
                                       )}
                                       <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                     </Button>
@@ -369,13 +378,81 @@ const CreateEventForm = () => {
                                 >
                                   <Calendar
                                     mode="single"
-                                    selected={field.value}
-                                    onSelect={field.onChange}
+                                    selected={selectedDate}
+                                    onSelect={(date) => {
+                                      setSelectedDate(date);
+                                      if (date) {
+                                        const currentDateTime =
+                                          field.value || new Date();
+                                        const newDateTime = new Date(date);
+                                        newDateTime.setHours(
+                                          currentDateTime.getHours()
+                                        );
+                                        newDateTime.setMinutes(
+                                          currentDateTime.getMinutes()
+                                        );
+                                        field.onChange(newDateTime);
+                                      }
+                                    }}
                                     disabled={(date) =>
-                                      date > new Date("") || date < new Date()
+                                      date >
+                                        new Date(
+                                          new Date().setFullYear(
+                                            new Date().getFullYear() + 1
+                                          )
+                                        ) || date < new Date()
                                     }
                                     initialFocus
                                   />
+                                  <div className="p-3 border-t border-border">
+                                    <div className="flex items-center space-x-2">
+                                      <Clock className="h-4 w-4 opacity-50" />
+                                      <Select
+                                        onValueChange={(time) => {
+                                          if (!time) return;
+                                          const [hours, minutes] =
+                                            time.split(":");
+                                          const newDateTime = new Date(
+                                            field.value ||
+                                              selectedDate ||
+                                              new Date()
+                                          );
+                                          newDateTime.setHours(parseInt(hours));
+                                          newDateTime.setMinutes(
+                                            parseInt(minutes)
+                                          );
+                                          field.onChange(newDateTime);
+                                        }}
+                                      >
+                                        <SelectTrigger>
+                                          <SelectValue placeholder="Seleccionar hora" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                          {Array.from({ length: 24 * 4 }).map(
+                                            (_, index) => {
+                                              const hours = Math.floor(
+                                                index / 4
+                                              );
+                                              const minutes = (index % 4) * 15;
+                                              const timeString = `${hours
+                                                .toString()
+                                                .padStart(2, "0")}:${minutes
+                                                .toString()
+                                                .padStart(2, "0")}`;
+                                              return (
+                                                <SelectItem
+                                                  key={index}
+                                                  value={timeString}
+                                                >
+                                                  {timeString}
+                                                </SelectItem>
+                                              );
+                                            }
+                                          )}
+                                        </SelectContent>
+                                      </Select>
+                                    </div>
+                                  </div>
                                 </PopoverContent>
                               </Popover>
                               <FormMessage />
