@@ -85,8 +85,14 @@ export const productsFilterQuery = object({
   query: string().optional(),
   sizes: union([array(string()), string()]).optional(),
   colors: union([array(string()), string()]).optional(),
-  category_id: string().optional(),
+  category_id: union([array(string()), string()]).optional(),
+});
+
+export const getProductByKeysSchema = object({
+  productId: string({ required_error: "Este campo es requerido." }),
+  variantId: string({ required_error: "Este campo es requerido." }),
 });
 
 export type CreateProductInput = TypeOf<typeof createProductSchema>;
 export type ProductsFilterQueryInput = TypeOf<typeof productsFilterQuery>;
+export type GetProductByKeysInput = TypeOf<typeof getProductByKeysSchema>;

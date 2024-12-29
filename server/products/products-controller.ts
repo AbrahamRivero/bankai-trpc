@@ -2,6 +2,7 @@ import prisma from "@/prisma/prisma-client";
 import { TRPCError } from "@trpc/server";
 import {
   CreateProductInput,
+  GetProductByKeysInput,
   ProductsFilterQueryInput,
 } from "./products-schema";
 
@@ -130,12 +131,10 @@ export const getFilteredProductsHandler = async ({
       whereClause.variants.some.colors = { hasSome: colors };
     }
 
-    if (
-      category_id &&
-      typeof category_id === "string" &&
-      category_id.trim() !== ""
-    ) {
-      whereClause.category_id = category_id;
+    if (category_id && Array.isArray(category_id) && category_id.length > 0) {
+      whereClause.categories = {
+        id: { in: category_id },
+      };
     }
 
     const products = await prisma.products.findMany({
@@ -160,6 +159,45 @@ export const getFilteredProductsHandler = async ({
       products,
       totalPages,
     };
+  } catch (err: any) {
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: err.message,
+    });
+  }
+};
+
+export const getProductByKeysHandler = async ({
+  productKeys,
+}: {
+  productKeys: GetProductByKeysInput;
+}) => {
+  const { productId, variantId } = productKeys;
+
+  try {
+    const product = await prisma.products.findUnique({
+      where: { id: productId },
+      select: {
+        name: true,
+        description: true,
+        categories: { select: { name: true } },
+        variants: {
+          where: { id: variantId },
+          select: {
+            img_url: true,
+            discount: true,
+            price: true,
+            colors: true,
+            sizes: true,
+            discount_end_date: true,
+            stock: true,
+            status: true,
+          },
+        },
+      },
+    });
+
+    return { status: "success", product };
   } catch (err: any) {
     throw new TRPCError({
       code: "INTERNAL_SERVER_ERROR",
