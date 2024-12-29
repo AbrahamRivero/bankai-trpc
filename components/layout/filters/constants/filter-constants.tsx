@@ -1,6 +1,12 @@
-import { PackagePlus, ArrowUp01, ArrowDown10 } from "lucide-react";
+import { PackagePlus, ArrowUp01, ArrowDown10, LucideIcon } from "lucide-react";
 
-export const sortOptions = [
+type SortOption = {
+  name: string;
+  value: string;
+  icon: LucideIcon;
+};
+
+export const sortOptions: SortOption[] = [
   { name: "Nuevo", value: "newest", icon: PackagePlus },
   { name: "Precio: Menor a Mayor", value: "price_asc", icon: ArrowUp01 },
   { name: "Precio: Mayor a Menor", value: "price_desc", icon: ArrowDown10 },
@@ -11,8 +17,12 @@ export const filters = [
     id: "colors",
     name: "Color",
     options: [
-      { value: "#ffffff", label: "White" },
-      { value: "#000000", label: "Black" },
+      { value: "white", label: "White" },
+      { value: "beige", label: "Beige" },
+      { value: "blue", label: "Blue" },
+      { value: "brown", label: "Brown" },
+      { value: "green", label: "Green" },
+      { value: "purple", label: "Purple" },
     ],
   },
   {

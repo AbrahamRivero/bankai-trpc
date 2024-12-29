@@ -6,10 +6,9 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ProductsFilterQueryInput } from "@/server/products/products-schema";
 import ProductCard from "./product-card";
-import Link from "next/link";
 import ProductCardSkeleton from "./product-card-skeleton";
 import Pagination from "./products-pagination";
-import FilterHeading from "./layout/filters/filter-heading";
+import Link from "next/link";
 
 export default function ListProducts({
   initialParams,
@@ -26,7 +25,7 @@ export default function ListProducts({
       query: searchParams.get("query") || undefined,
       sizes: searchParams.getAll("sizes"),
       colors: searchParams.getAll("colors"),
-      category_id: searchParams.get("category_id") || undefined,
+      category_id: searchParams.getAll("category_id") || undefined,
     };
     setCurrentParams(newParams);
   }, [searchParams]);
@@ -38,12 +37,10 @@ export default function ListProducts({
 
   return (
     <>
-      <FilterHeading />
-
       {isLoading ? (
         <>
-          <div className="mt-6 grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 sm:gap-y-10 lg:grid-cols-4">
-            {[...Array(6)].map((_, index) => (
+          <div className="mt-6 grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 sm:gap-y-10 lg:grid-cols-3">
+            {[...Array(3)].map((_, index) => (
               <ProductCardSkeleton key={index} />
             ))}
           </div>
@@ -53,7 +50,7 @@ export default function ListProducts({
         </>
       ) : data && data.results > 0 ? (
         <>
-          <div className="mt-6 grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 sm:gap-y-10 lg:grid-cols-4">
+          <div className="mt-6 grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 sm:gap-y-10 lg:grid-cols-3">
             {data.products.map((product) =>
               product.variants.map((variant) => (
                 <ProductCard

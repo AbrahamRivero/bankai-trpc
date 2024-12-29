@@ -1,14 +1,12 @@
 "use client";
 import { trpc } from "@/lib/trpc";
+import { buttonVariants } from "./ui/button";
 import React, { Suspense } from "react";
 import ProductCard from "./product-card";
 import ProductCardSkeleton from "./product-card-skeleton";
 import Link from "next/link";
-import { buttonVariants } from "./ui/button";
-import Pagination from "./products-pagination";
-import FilterHeading from "./layout/filters/filter-heading";
 
-const CategoriesPageContent = ({ id }: { id: number }) => {
+const CategoriesPageContent = ({ id }: { id: string }) => {
   const { data, isLoading } = trpc.getCategoryById.useQuery({ id: id });
 
   return (
@@ -21,8 +19,6 @@ const CategoriesPageContent = ({ id }: { id: number }) => {
         </p>
       </div>
       <>
-        <FilterHeading isCategoriesPage />
-
         {isLoading ? (
           <>
             <div className="mt-6 grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 sm:gap-y-10 lg:grid-cols-4">
@@ -45,7 +41,7 @@ const CategoriesPageContent = ({ id }: { id: number }) => {
                     name={product.name}
                     href={`/products/${product.id}/${variant.id}`}
                     category={product.categories?.name}
-                    image_url={variant.image}
+                    img_url={variant.img_url}
                     price={Number(variant.price)}
                     discountPercentage={Number(variant.discount)}
                     discountEndDate={variant.discount_end_date}
