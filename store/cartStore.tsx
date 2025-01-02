@@ -3,7 +3,7 @@ import { create } from "zustand";
 // Definimos la interfaz para un item del carrito
 export interface CartItem {
   id: string;
-  name: string;
+  name?: string;
   price: number;
   quantity: number;
   img_url?: string | null;

@@ -1,13 +1,11 @@
 import {
   createCategoriesHandler,
-  getCategoryByIdHandler,
+  getCategoryBySlugHandler,
   getCategoriesHandler,
-  getCategoriesByTypeHandler,
 } from "./categories-controller";
 import {
   createCategorySchema,
-  filterCategoriesByTypeSchema,
-  searchCategoryByIdSchema,
+  searchCategoryBySlugSchema,
 } from "./categories-schema";
 import { t } from "@/lib/trpc-server";
 
@@ -16,14 +14,9 @@ const categoriesRouter = t.router({
     .input(createCategorySchema)
     .mutation(({ input }) => createCategoriesHandler({ input })),
   getCategories: t.procedure.query(() => getCategoriesHandler()),
-  getCategoriesByType: t.procedure
-    .input(filterCategoriesByTypeSchema)
-    .query(({ input }) =>
-      getCategoriesByTypeHandler({ categoryType: input.type })
-    ),
-  getCategoryById: t.procedure
-    .input(searchCategoryByIdSchema)
-    .query(({ input }) => getCategoryByIdHandler({ id: input.id })),
+  getCategoryBySlug: t.procedure
+    .input(searchCategoryBySlugSchema)
+    .query(({ input }) => getCategoryBySlugHandler({ slug: input.slug })),
 });
 
 export default categoriesRouter;

@@ -46,7 +46,7 @@ export default function ProductFilteringInterface({
 }) {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
-  const { data } = trpc.getCategoriesByType.useQuery({ type: "product" });
+  const { data } = trpc.getCategories.useQuery();
 
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -89,7 +89,7 @@ export default function ProductFilteringInterface({
             <div className="flex-1 overflow-y-auto pr-2">
               <div className="mt-4">
                 <Accordion type="single" collapsible>
-                  <AccordionItem value="category_id">
+                  <AccordionItem value="category_slug">
                     <AccordionTrigger>Categorías</AccordionTrigger>
                     <AccordionContent>
                       <div className="space-y-4">
@@ -98,12 +98,12 @@ export default function ProductFilteringInterface({
                             <Checkbox
                               id={`filter-mobile-${option.id}-${option.name}`}
                               checked={searchParams
-                                .getAll("category_id")
-                                .includes(String(option.id))}
+                                .getAll("category_slug")
+                                .includes(String(option.slug))}
                               onCheckedChange={(checked: string | boolean) =>
                                 handleFilterChange(
-                                  "category_id",
-                                  String(option.id),
+                                  "category_slug",
+                                  String(option.slug),
                                   checked
                                 )
                               }
@@ -192,7 +192,7 @@ export default function ProductFilteringInterface({
               {/* Filters */}
               <form className="hidden lg:block">
                 <Accordion type="single" collapsible>
-                  <AccordionItem value="category_id">
+                  <AccordionItem value="category_slug">
                     <AccordionTrigger>Categorías</AccordionTrigger>
                     <AccordionContent>
                       <div className="space-y-4">
@@ -201,12 +201,12 @@ export default function ProductFilteringInterface({
                             <Checkbox
                               id={`filter-mobile-${option.id}-${option.name}`}
                               checked={searchParams
-                                .getAll("category_id")
-                                .includes(String(option.id))}
+                                .getAll("category_slug")
+                                .includes(String(option.slug))}
                               onCheckedChange={(checked: string | boolean) =>
                                 handleFilterChange(
-                                  "category_id",
-                                  String(option.id),
+                                  "category_slug",
+                                  String(option.slug),
                                   checked
                                 )
                               }

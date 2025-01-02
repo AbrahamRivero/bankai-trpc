@@ -9,7 +9,7 @@ export interface SearchParams {
   query?: string;
   sizes?: string[];
   colors?: string[];
-  category_id?: string[];
+  category_slug?: string[];
 }
 
 interface ProductsPageProps {
@@ -19,14 +19,14 @@ interface ProductsPageProps {
 export default async function ProductsPage({
   searchParams,
 }: ProductsPageProps) {
-  const { query, sizes, colors, category_id } = searchParams;
+  const { query, sizes, colors, category_slug } = searchParams;
 
   const helpers = createSSRHelper();
   await helpers.getFilteredProducts.prefetch({
     query,
     sizes,
     colors,
-    category_id,
+    category_slug,
   });
   await helpers.getCategories.prefetch();
 

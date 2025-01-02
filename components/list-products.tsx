@@ -25,7 +25,7 @@ export default function ListProducts({
       query: searchParams.get("query") || undefined,
       sizes: searchParams.getAll("sizes"),
       colors: searchParams.getAll("colors"),
-      category_id: searchParams.getAll("category_id") || undefined,
+      category_slug: searchParams.getAll("category_slug") || undefined,
     };
     setCurrentParams(newParams);
   }, [searchParams]);
@@ -51,20 +51,29 @@ export default function ListProducts({
       ) : data && data.results > 0 ? (
         <>
           <div className="mt-6 grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 sm:gap-y-10 lg:grid-cols-3">
-            {data.products.map((product) =>
-              product.variants.map((variant) => (
+            {data.products.map(
+              ({
+                id,
+                name,
+                slug,
+                img_url,
+                price,
+                discount,
+                discount_end_date,
+                product_categories,
+              }) => (
                 <ProductCard
-                  key={variant.id}
-                  variantId={variant.id}
-                  name={product.name}
-                  href={`/products/${product.id}/${variant.id}`}
-                  category={product.categories?.name}
-                  img_url={variant.img_url}
-                  price={Number(variant.price)}
-                  discountPercentage={Number(variant.discount)}
-                  discountEndDate={variant.discount_end_date}
+                  key={id}
+                  id={id}
+                  name={name}
+                  href={`/products/${slug}`}
+                  category={product_categories?.name}
+                  img_url={img_url}
+                  price={Number(price)}
+                  discountPercentage={Number(discount)}
+                  discountEndDate={discount_end_date}
                 />
-              ))
+              )
             )}
           </div>
           <div className="flex justify-center mt-6 mb-10">

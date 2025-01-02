@@ -26,21 +26,30 @@ const LatestProducts = () => {
       </div>
       <div className="mt-6 grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 sm:gap-y-10 lg:grid-cols-4">
         {data &&
-          data.map((product) =>
-            product.variants.map((variant, index) => (
-              <Suspense key={variant.id} fallback={<ProductCardSkeleton />}>
+          data.map(
+            ({
+              id,
+              name,
+              slug,
+              img_url,
+              price,
+              discount,
+              discount_end_date,
+              product_categories,
+            }) => (
+              <Suspense key={id} fallback={<ProductCardSkeleton />}>
                 <ProductCard
-                  variantId={variant.id}
-                  name={product.name}
-                  href={`/products/${product.id}/${variant.id}`}
-                  category={product.categories?.name}
-                  img_url={variant.img_url}
-                  price={Number(variant.price)}
-                  discountPercentage={Number(variant.discount)}
-                  discountEndDate={variant.discount_end_date}
+                  id={id}
+                  name={name}
+                  href={`/products/${slug}`}
+                  category={product_categories?.name}
+                  img_url={img_url}
+                  price={Number(price)}
+                  discountPercentage={Number(discount)}
+                  discountEndDate={discount_end_date}
                 />
               </Suspense>
-            ))
+            )
           )}
       </div>
     </section>

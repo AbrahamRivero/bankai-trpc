@@ -7,12 +7,13 @@ export const createCategoriesHandler = async ({
 }: {
   input: CreateCategoryInput;
 }) => {
-  const { name, type, img_url } = input;
+  const { name, slug, description, img_url } = input;
   try {
-    const category = await prisma.categories.create({
+    const category = await prisma.product_categories.create({
       data: {
         name,
-        type,
+        slug,
+        description,
         img_url,
       },
     });
@@ -28,7 +29,7 @@ export const createCategoriesHandler = async ({
 
 export const getCategoriesHandler = async () => {
   try {
-    const categories = await prisma.categories.findMany();
+    const categories = await prisma.product_categories.findMany();
 
     return categories;
   } catch (err: any) {
@@ -39,44 +40,26 @@ export const getCategoriesHandler = async () => {
   }
 };
 
-export const getCategoriesByTypeHandler = async ({
-  categoryType,
-}: {
-  categoryType: string;
-}) => {
+export const getCategoryBySlugHandler = async ({ slug }: { slug: string }) => {
   try {
-    const categories = await prisma.categories.findMany({
-      where: { type: { equals: categoryType } },
-    });
-
-    return categories;
-  } catch (err: any) {
-    throw new TRPCError({
-      code: "INTERNAL_SERVER_ERROR",
-      message: err.message,
-    });
-  }
-};
-
-export const getCategoryByIdHandler = async ({ id }: { id: string }) => {
-  try {
-    const category = await prisma.categories.findFirst({
-      where: { id: { equals: id } },
+    const category = await prisma.product_categories.findFirst({
+      where: { slug: { equals: slug } },
       select: {
         name: true,
         products: {
           select: {
             id: true,
             name: true,
+            slug: true,
             description: true,
-            categories: { select: { name: true } },
-            variants: {
+            img_url: true,
+            price: true,
+            discount: true,
+            has_discount: true,
+            discount_end_date: true,
+            product_categories: {
               select: {
-                id: true,
-                img_url: true,
-                price: true,
-                discount: true,
-                discount_end_date: true,
+                name: true,
               },
             },
           },

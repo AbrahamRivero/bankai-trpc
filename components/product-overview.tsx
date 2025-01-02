@@ -1,10 +1,22 @@
 "use client";
 
 import { useState } from "react";
-import { Check, ChevronRight, HelpCircle, Shield, Star } from "lucide-react";
+import { Check, ChevronRight, Shield, Star, XCircle } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormDescription,
+  FormMessage,
+  FormLabel,
+} from "./ui/form";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { trpc } from "@/lib/trpc";
+import { cn, formatPrice } from "@/lib/utils";
+import useCartStore from "@/store/cartStore";
 
 const product = {
   name: "Everyday Ruck Snack",
@@ -25,14 +37,33 @@ const product = {
     { name: "20L", description: "Enough room for a serious amount of snacks." },
   ],
 };
-const reviews = { average: 4, totalCount: 1624 };
 
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ");
-}
-
-export default function ProductPage() {
+export default function ProductOverview({ slug }: { slug: string }) {
   const [selectedSize, setSelectedSize] = useState(product.sizes[0].name);
+
+  const { data, isFetching } = trpc.getProductBySlug.useQuery({ slug });
+
+  const selectedProduct = data?.product;
+  const reviews = selectedProduct?.reviews;
+  const totalReviews = reviews?.length;
+  const averageRating =
+    reviews && reviews.length > 0
+      ? reviews.reduce((sum, review) => sum + Number(review.rating), 0) /
+        reviews.length
+      : 0;
+
+  const { addItem } = useCartStore();
+
+  const handleAddToCart = () => {
+    if (!selectedProduct) return;
+    addItem({
+      id: selectedProduct.id,
+      name: selectedProduct.name,
+      price: Number(selectedProduct.price),
+      quantity: 1,
+      img_url: selectedProduct.img_url,
+    });
+  };
 
   return (
     <div className="bg-background">
@@ -64,18 +95,18 @@ export default function ProductPage() {
 
           <div className="mt-4">
             <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-              {product.name}
+              {selectedProduct?.name}
             </h1>
           </div>
 
           <section aria-labelledby="information-heading" className="mt-4">
             <h2 id="information-heading" className="sr-only">
-              Product information
+              Información del producto
             </h2>
 
             <div className="flex items-center">
               <p className="text-lg text-foreground sm:text-xl">
-                {product.price}
+                {selectedProduct ? formatPrice(selectedProduct.price) : 0}
               </p>
 
               <div className="ml-4 border-l border-border pl-4">
@@ -83,23 +114,25 @@ export default function ProductPage() {
                 <div className="flex items-center">
                   <div>
                     <div className="flex items-center">
-                      {[0, 1, 2, 3, 4].map((rating) => (
-                        <Star
-                          key={rating}
-                          className={classNames(
-                            reviews.average > rating
-                              ? "text-yellow-400"
-                              : "text-muted-foreground",
-                            "h-5 w-5 flex-shrink-0"
-                          )}
-                          aria-hidden="true"
-                        />
-                      ))}
+                      {[0, 1, 2, 3, 4].map((rating) => {
+                        return (
+                          <Star
+                            key={rating}
+                            className={cn(
+                              averageRating > rating
+                                ? "text-yellow-400"
+                                : "text-muted-foreground",
+                              "h-5 w-5 flex-shrink-0"
+                            )}
+                            aria-hidden="true"
+                          />
+                        );
+                      })}
                     </div>
-                    <p className="sr-only">{reviews.average} out of 5 stars</p>
+                    <p className="sr-only">{averageRating} out of 5 stars</p>
                   </div>
                   <p className="ml-2 text-sm text-muted-foreground">
-                    {reviews.totalCount} reviews
+                    {totalReviews} reviews
                   </p>
                 </div>
               </div>
@@ -107,27 +140,41 @@ export default function ProductPage() {
 
             <div className="mt-4 space-y-6">
               <p className="text-base text-muted-foreground">
-                {product.description}
+                {selectedProduct?.description}
               </p>
             </div>
 
             <div className="mt-6 flex items-center">
-              <Check
-                className="h-5 w-5 flex-shrink-0 text-green-500"
-                aria-hidden="true"
-              />
-              <p className="ml-2 text-sm text-muted-foreground">
-                In stock and ready to ship
-              </p>
+              {selectedProduct && selectedProduct.stock > 0 ? (
+                <>
+                  <Check
+                    className="h-5 w-5 flex-shrink-0 text-green-500"
+                    aria-hidden="true"
+                  />
+                  <p className="ml-2 text-sm text-muted-foreground">
+                    En stock y listo para enviar
+                  </p>
+                </>
+              ) : (
+                <>
+                  <XCircle
+                    className="h-5 w-5 flex-shrink-0 text-red-500"
+                    aria-hidden="true"
+                  />
+                  <p className="ml-2 text-sm text-muted-foreground">
+                    No disponible en este momento
+                  </p>
+                </>
+              )}
             </div>
           </section>
         </div>
 
         {/* Product image */}
-        <div className="mt-10 lg:col-start-2 lg:row-span-2 lg:mt-0 lg:self-center">
+        <div className="mt-10 lg:col-start-2 lg:row-span-2 lg:mt-0 lg:self-center shadow-md">
           <img
-            src={product.imageSrc}
-            alt={product.imageAlt}
+            src={selectedProduct?.img_url}
+            alt={selectedProduct?.name}
             className="rounded-lg object-cover object-center"
           />
         </div>
@@ -141,51 +188,40 @@ export default function ProductPage() {
 
             <form>
               <div className="sm:flex sm:justify-between">
-                {/* Size selector */}
-                <div className="mt-1">
-                  <Label className="text-base font-semibold text-foreground">
-                    Size
-                  </Label>
-                  <RadioGroup
-                    value={selectedSize}
-                    onValueChange={setSelectedSize}
-                    className="mt-2"
-                  >
-                    {product.sizes.map((size) => (
-                      <div
-                        key={size.name}
-                        className="flex items-center space-x-3"
+                {selectedProduct && selectedProduct.sizes.length > 0 ? (
+                  <>
+                    {/* Size selector */}
+                    <div className="mt-1">
+                      <Label className="text-base font-semibold text-foreground">
+                        Talla
+                      </Label>
+                      <RadioGroup
+                        value={selectedSize}
+                        onValueChange={setSelectedSize}
+                        className="mt-2"
                       >
-                        <RadioGroupItem value={size.name} id={size.name} />
-                        <Label
-                          htmlFor={size.name}
-                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                        >
-                          {size.name}
-                        </Label>
-                        <span className="text-sm text-muted-foreground">
-                          {size.description}
-                        </span>
-                      </div>
-                    ))}
-                  </RadioGroup>
-                </div>
-              </div>
-              <div className="mt-4">
-                <a
-                  href="#"
-                  className="group inline-flex text-sm text-muted-foreground hover:text-foreground"
-                >
-                  <span>What size should I buy?</span>
-                  <HelpCircle
-                    className="ml-2 h-5 w-5 flex-shrink-0 text-muted-foreground group-hover:text-foreground"
-                    aria-hidden="true"
-                  />
-                </a>
+                        {selectedProduct.sizes.map((size, idx) => (
+                          <div
+                            key={`${size} ${idx}`}
+                            className="flex items-center space-x-3"
+                          >
+                            <RadioGroupItem value={size} id={size} />
+                            <Label
+                              htmlFor={size}
+                              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                            >
+                              {size}
+                            </Label>
+                          </div>
+                        ))}
+                      </RadioGroup>
+                    </div>
+                  </>
+                ) : null}
               </div>
               <div className="mt-10">
-                <Button type="submit" className="w-full">
-                  Add to bag
+                <Button type="button" size="lg" onClick={handleAddToCart}>
+                  Añadir al carrito
                 </Button>
               </div>
               <div className="mt-6 text-center">
@@ -195,7 +231,7 @@ export default function ProductPage() {
                     aria-hidden="true"
                   />
                   <span className="text-muted-foreground group-hover:text-foreground">
-                    Lifetime Guarantee
+                    Calidad Garantizada
                   </span>
                 </a>
               </div>

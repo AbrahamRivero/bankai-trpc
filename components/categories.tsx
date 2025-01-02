@@ -8,9 +8,7 @@ import Link from "next/link";
 import CategorySkeleton from "./category-skeleton";
 
 const Categories = () => {
-  const { data, isLoading } = trpc.getCategoriesByType.useQuery({
-    type: "product",
-  });
+  const { data, isLoading } = trpc.getCategories.useQuery();
   return (
     <section className="container mx-auto px-4 py-12">
       <div>

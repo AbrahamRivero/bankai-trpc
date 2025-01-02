@@ -4,10 +4,11 @@ import NextLink from "next/link";
 import DiscountBadge from "./discount-badge";
 import CountdownTimer from "./countdown-timer";
 import useCartStore, { CartItem } from "@/store/cartStore";
+import { formatPrice } from "../lib/utils";
 
 interface ProductCardProps {
   name: string;
-  variantId: string;
+  id: string;
   href: string;
   img_url: string | null;
   price: number;
@@ -17,8 +18,8 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({
+  id,
   name,
-  variantId,
   href,
   img_url,
   category,
@@ -33,7 +34,7 @@ const ProductCard = ({
 
     const discountAmount = (price * discountPercentage) / 100;
     const finalPrice = price - discountAmount;
-    return finalPrice;
+    return formatPrice(finalPrice);
   };
 
   const { addItem } = useCartStore();
@@ -74,7 +75,7 @@ const ProductCard = ({
               aria-label="Add to cart"
               onClick={() =>
                 handleAddItem({
-                  id: variantId,
+                  id,
                   name,
                   price,
                   quantity: 1,
@@ -105,7 +106,7 @@ const ProductCard = ({
             aria-label="Add to cart"
             onClick={() =>
               handleAddItem({
-                id: variantId,
+                id,
                 name,
                 price,
                 quantity: 1,
