@@ -35,7 +35,7 @@ export default function Navbar() {
     { href: "/products", label: "Productos", icon: ShoppingBag },
     { href: "/about", label: "Sobre nosotros", icon: Info },
     { href: "/contact", label: "Contacto", icon: Phone },
-    { href: "/events", label: "Eventos", icon: BookOpen },
+    /* { href: "/events", label: "Eventos", icon: BookOpen }, */
   ];
 
   const { items } = useCartStore();

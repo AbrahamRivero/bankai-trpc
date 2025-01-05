@@ -8,7 +8,7 @@ const Footer = () => {
     links: [
       { name: "Inicio", href: "/" },
       { name: "Productos", href: "/products" },
-      { name: "Eventos", href: "/events" },
+      /* { name: "Eventos", href: "/events" }, */
       { name: "Sobre Nosotros", href: "/about" },
       { name: "Contáctenos", href: "/contact" },
     ],
