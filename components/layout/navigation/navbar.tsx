@@ -26,6 +26,7 @@ import { SignedOut, SignInButton, useAuth } from "@clerk/nextjs";
 import CartSheet from "../../cart-sheet";
 import UserAccountNav from "./user-account-nav";
 import Link from "next/link";
+import Form from "next/form";
 import Image from "next/image";
 import useCartStore from "@/store/cartStore";
 
@@ -118,11 +119,14 @@ export default function Navbar() {
           {/* Search Bar */}
           <div className="flex flex-1 max-w-md mx-4">
             <div className="relative w-full">
-              <Input
-                className="w-full bg-gray-200 border-primary-foreground/20 pl-10 pr-4 py-2 text-primary placeholder:text-primary/65 focus-visible:ring-2 focus-visible:ring-accent transition-all"
-                placeholder="Buscar producto..."
-                type="search"
-              />
+              <Form action="/search">
+                <Input
+                  type="text"
+                  name="query"
+                  placeholder="Buscar producto..."
+                  className="w-full bg-gray-200 border-primary-foreground/20 pl-10 pr-4 py-2 text-primary placeholder:text-primary/65 focus-visible:ring-2 focus-visible:ring-accent transition-all"
+                />
+              </Form>
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-primary/65" />
             </div>
           </div>
