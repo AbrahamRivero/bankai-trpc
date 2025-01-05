@@ -10,22 +10,24 @@ export const createEventHandler = async ({
   const {
     name,
     description,
-    date,
-    event_img,
+    event_date,
+    img_url,
     cover_price,
-    category_id,
-    location_id,
+    event_category_id,
+    event_location_id,
+    slug,
   } = input;
   try {
     const event = await prisma.events.create({
       data: {
         name,
+        slug,
         description,
-        date,
-        event_img,
         cover_price: Number(cover_price),
-        category_id,
-        location_id,
+        event_date,
+        img_url,
+        event_category_id,
+        event_location_id,
       },
     });
 
@@ -55,19 +57,19 @@ export const getLatestEventsHandler = async () => {
   try {
     const events = await prisma.events.findMany({
       select: {
-        id: true,
         name: true,
         description: true,
-        date: true,
-        event_img: true,
-        cover_price: true,
-        locations: { select: { name: true, address: true } },
         slug: true,
+        cover_price: true,
+        img_url: true,
+        event_date: true,
+        event_categories: { select: { name: true } },
+        locations: { select: { name: true, address: true } },
       },
       orderBy: {
-        date: "desc",
+        event_date: "desc",
       },
-      take: 8,
+      take: 4,
     });
 
     return events;
@@ -85,11 +87,11 @@ export const getEventByIdHandler = async ({
   eventFilterQuery: EventFilterQueryInput;
 }) => {
   try {
-    const { id } = await eventFilterQuery;
+    const { slug } = await eventFilterQuery;
 
-    const event = await prisma.events.findUnique({
+    const event = await prisma.events.findFirst({
       where: {
-        id,
+        slug,
       },
     });
 

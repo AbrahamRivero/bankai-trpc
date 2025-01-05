@@ -14,15 +14,18 @@ const LatestEvents = () => {
 
       <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-6">
         {events?.map(
-          ({ id, name, description, date, locations, event_img, slug }) => (
+          (
+            { name, description, slug, event_date, img_url, locations },
+            idx
+          ) => (
             <EventCard
-              key={id}
+              key={`${slug}-${idx}`}
               slug={slug}
               name={name}
               description={description}
-              date={date}
+              date={event_date}
               location={locations}
-              event_img={event_img}
+              event_img={img_url}
             />
           )
         )}

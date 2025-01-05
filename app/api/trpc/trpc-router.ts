@@ -4,6 +4,7 @@ import productsRouter from "@/server/products/products-route";
 import categoriesRouter from "@/server/categories/categories-route";
 import locationsRouter from "@/server/locations/location-route";
 import eventsRouter from "@/server/events/events-route";
+import eventCategoriesRouter from "@/server/events-categories/events-categories-route";
 
 import { createServerSideHelpers } from "@trpc/react-query/server";
 import SuperJSON from "superjson";
@@ -20,9 +21,10 @@ const healthCheckerRouter = t.router({
 export const appRouter = t.mergeRouters(
   userRouter,
   categoriesRouter,
+  eventCategoriesRouter,
   productsRouter,
-  locationsRouter,
   eventsRouter,
+  locationsRouter,
   healthCheckerRouter
 );
 

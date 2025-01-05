@@ -23,23 +23,22 @@ import {
 } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc";
 import { Textarea } from "../ui/textarea";
-import { DASHBOARD_CATEGORIES_URL } from "@/lib/constants";
-import { createCategorySchema } from "@/server/categories/categories-schema";
+import { DASHBOARD_EVENT_CATEGORIES_URL } from "@/lib/constants";
+import { eventCategoryCreationSchema } from "@/server/events-categories/events-categories-schema";
 import { generateSlug } from "@/lib/utils";
 import Link from "next/link";
 
-const CreateCategoryForm = () => {
-  const form = useForm<z.infer<typeof createCategorySchema>>({
-    resolver: zodResolver(createCategorySchema),
+const CreateEventCategoryForm = () => {
+  const form = useForm<z.infer<typeof eventCategoryCreationSchema>>({
+    resolver: zodResolver(eventCategoryCreationSchema),
     defaultValues: {
       name: "",
       description: "",
       slug: "",
-      img_url: "",
     },
   });
 
-  const { mutate, isLoading } = trpc.createCategory.useMutation({
+  const { mutate, isLoading } = trpc.createEventCategory.useMutation({
     onSettled: () => {
       form.reset();
     },
@@ -61,13 +60,11 @@ const CreateCategoryForm = () => {
             name,
             description,
             slug,
-            img_url,
-          }: z.infer<typeof createCategorySchema>) =>
+          }: z.infer<typeof eventCategoryCreationSchema>) =>
             mutate({
               name,
               description,
               slug,
-              img_url,
             })
         )}
         className="mb-4"
@@ -76,7 +73,7 @@ const CreateCategoryForm = () => {
           <div className="flex items-center gap-4">
             <div className="hidden items-center gap-2 md:ml-auto md:flex">
               <Link
-                href={DASHBOARD_CATEGORIES_URL}
+                href={DASHBOARD_EVENT_CATEGORIES_URL}
                 className={buttonVariants({ size: "sm", variant: "outline" })}
               >
                 Descartar
@@ -178,27 +175,6 @@ const CreateCategoryForm = () => {
                         )}
                       />
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                      <div className="grid gap-3">
-                        <FormField
-                          control={form.control}
-                          name="img_url"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Imagen (URL)</FormLabel>
-                              <FormControl>
-                                <Input
-                                  className="w-full"
-                                  placeholder="URL de la imagen de la Categoría..."
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -207,7 +183,7 @@ const CreateCategoryForm = () => {
 
           <div className="flex items-center justify-center gap-2 md:hidden">
             <Link
-              href={DASHBOARD_CATEGORIES_URL}
+              href={DASHBOARD_EVENT_CATEGORIES_URL}
               className={buttonVariants({ size: "sm", variant: "outline" })}
             >
               Descartar
@@ -228,4 +204,4 @@ const CreateCategoryForm = () => {
   );
 };
 
-export default CreateCategoryForm;
+export default CreateEventCategoryForm;
