@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { trpc } from "@/lib/trpc";
 import { cn, formatPrice } from "@/lib/utils";
 import useCartStore from "@/store/cartStore";
+import { Breadcrumb } from "./layout/navigation/breadcrumb";
 
 const product = {
   name: "Everyday Ruck Snack",
@@ -70,28 +71,7 @@ export default function ProductOverview({ slug }: { slug: string }) {
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:grid lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8">
         {/* Product details */}
         <div className="lg:max-w-lg lg:self-end">
-          <nav aria-label="Breadcrumb">
-            <ol role="list" className="flex items-center space-x-2">
-              {product.breadcrumbs.map((breadcrumb, breadcrumbIdx) => (
-                <li key={breadcrumb.id}>
-                  <div className="flex items-center text-sm">
-                    <a
-                      href={breadcrumb.href}
-                      className="font-medium text-muted-foreground hover:text-foreground"
-                    >
-                      {breadcrumb.name}
-                    </a>
-                    {breadcrumbIdx !== product.breadcrumbs.length - 1 ? (
-                      <ChevronRight
-                        className="ml-2 h-5 w-5 flex-shrink-0 text-muted-foreground"
-                        aria-hidden="true"
-                      />
-                    ) : null}
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </nav>
+          <Breadcrumb />
 
           <div className="mt-4">
             <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
