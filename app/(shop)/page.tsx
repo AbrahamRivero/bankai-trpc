@@ -8,7 +8,7 @@ import LatestEvents from "@/components/events-section";
 
 export default async function Home() {
   const helpers = createSSRHelper();
-  await helpers.getCategoriesByType.prefetch({ type: "product" });
+  await helpers.getCategories.prefetch();
   await helpers.getLatestProducts.prefetch();
 
   return (
