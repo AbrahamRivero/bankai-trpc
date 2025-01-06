@@ -67,7 +67,15 @@ export const getCategoryBySlugHandler = async ({ slug }: { slug: string }) => {
       },
     });
 
-    return category;
+    const categoryWithFormattedProducts = {
+      ...category,
+      products: category?.products.map((product) => ({
+        ...product,
+        price: Number(product.price),
+      })),
+    };
+
+    return categoryWithFormattedProducts;
   } catch (err: any) {
     throw new TRPCError({
       code: "INTERNAL_SERVER_ERROR",

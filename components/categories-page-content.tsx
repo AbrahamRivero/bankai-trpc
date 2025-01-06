@@ -19,7 +19,7 @@ type ProductGridProps = {
   product_categories: {
     name: string;
   } | null;
-  price: any;
+  price: number;
   discount_end_date: Date | null;
   has_discount: boolean;
   discount: number;
@@ -56,8 +56,8 @@ const ProductGrid = ({ products }: { products: ProductGridProps }) => {
               href={`/products/${slug}`}
               category={product_categories?.name}
               img_url={img_url}
-              price={Number(price)}
-              discountPercentage={Number(discount)}
+              price={price}
+              discountPercentage={discount}
               discountEndDate={discount_end_date}
             />
           </motion.div>
@@ -128,7 +128,7 @@ const CategoriesPageContent = ({ slug }: { slug: string }) => {
           ) : (
             <>
               <CategoryHeader name={data?.name || ""} />
-              {data && data.products.length > 0 ? (
+              {data?.products && data.products.length > 0 ? (
                 <ProductGrid products={data.products} />
               ) : (
                 <NoProductsFound />

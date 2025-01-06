@@ -8,11 +8,23 @@ export function cn(...inputs: ClassValue[]) {
 
 export function formatPrice(
   price: number | Decimal,
+  discountPercentage?: number,
   locale: string = "es-ES",
   currency: string = "USD"
 ): string {
+  let finalPrice = Number(price);
+
+  if (discountPercentage) {
+    if (discountPercentage > 100) {
+      finalPrice = 0;
+    } else {
+      const discountAmount = (finalPrice * discountPercentage) / 100;
+      finalPrice -= discountAmount;
+    }
+  }
+
   return new Intl.NumberFormat(locale, { style: "currency", currency }).format(
-    Number(price)
+    finalPrice
   );
 }
 

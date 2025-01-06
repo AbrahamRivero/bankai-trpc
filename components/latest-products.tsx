@@ -1,10 +1,10 @@
 "use client";
 import { ArrowRight } from "lucide-react";
 import { trpc } from "@/lib/trpc";
+import { Suspense } from "react";
 import Link from "next/link";
 import ProductCard from "./product-card";
 import ProductCardSkeleton from "./product-card-skeleton";
-import { Suspense } from "react";
 
 const LatestProducts = () => {
   const { data, isLoading } = trpc.getLatestProducts.useQuery();
@@ -44,8 +44,8 @@ const LatestProducts = () => {
                   href={`/products/${slug}`}
                   category={product_categories?.name}
                   img_url={img_url}
-                  price={Number(price)}
-                  discountPercentage={Number(discount)}
+                  price={price}
+                  discountPercentage={discount}
                   discountEndDate={discount_end_date}
                 />
               </Suspense>

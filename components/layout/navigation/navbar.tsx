@@ -119,7 +119,7 @@ export default function Navbar() {
           {/* Search Bar */}
           <div className="flex flex-1 max-w-md mx-4">
             <div className="relative w-full">
-              <Form action="/search">
+              <Form action="/products">
                 <Input
                   type="text"
                   name="query"

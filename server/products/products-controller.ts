@@ -5,6 +5,8 @@ import {
   CreateProductInput,
   ProductsFilterQueryInput,
 } from "./products-schema";
+import { formatPrice } from "@/lib/utils";
+import { format } from "date-fns";
 
 export const createProductsHandler = async ({
   input,
@@ -76,10 +78,15 @@ export const getLatestProductsHandler = async () => {
       orderBy: {
         created_at: "asc",
       },
-      take: 4,
+      take: 8,
     });
 
-    return products;
+    const formattedProducts = products.map((product) => ({
+      ...product,
+      price: Number(product.price),
+    }));
+
+    return formattedProducts;
   } catch (err: any) {
     throw new TRPCError({
       code: "INTERNAL_SERVER_ERROR",
@@ -139,12 +146,17 @@ export const getFilteredProductsHandler = async ({
       },
     });
 
+    const formattedProducts = products.map((product) => ({
+      ...product,
+      price: Number(product.price),
+    }));
+
     const totalPages = Math.ceil(products.length / 12);
 
     return {
       status: "success",
       results: products.length,
-      products,
+      products: formattedProducts,
       totalPages,
     };
   } catch (err: any) {
@@ -182,7 +194,16 @@ export const getProductBySlugHandler = async ({
       },
     });
 
-    return { status: "success", product };
+    if (!product) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Product not found",
+      });
+    }
+
+    const formattedProduct = { ...product, price: Number(product.price) };
+
+    return { status: "success", product: formattedProduct };
   } catch (err: any) {
     throw new TRPCError({
       code: "INTERNAL_SERVER_ERROR",

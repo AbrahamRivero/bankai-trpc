@@ -69,8 +69,8 @@ export default function ListProducts({
                   href={`/products/${slug}`}
                   category={product_categories?.name}
                   img_url={img_url}
-                  price={Number(price)}
-                  discountPercentage={Number(discount)}
+                  price={price}
+                  discountPercentage={discount}
                   discountEndDate={discount_end_date}
                 />
               )

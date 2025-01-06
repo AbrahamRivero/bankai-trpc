@@ -5,6 +5,7 @@ import DiscountBadge from "./discount-badge";
 import CountdownTimer from "./countdown-timer";
 import useCartStore, { CartItem } from "@/store/cartStore";
 import { formatPrice } from "../lib/utils";
+import { Decimal } from "@prisma/client/runtime/library";
 
 interface ProductCardProps {
   name: string;
@@ -27,16 +28,6 @@ const ProductCard = ({
   discountPercentage,
   discountEndDate,
 }: ProductCardProps) => {
-  const getFinalProductPrice = (price: number, discountPercentage?: number) => {
-    if (!discountPercentage) return price;
-
-    if (discountPercentage > 100) return 0;
-
-    const discountAmount = (price * discountPercentage) / 100;
-    const finalPrice = price - discountAmount;
-    return formatPrice(finalPrice);
-  };
-
   const { addItem } = useCartStore();
 
   const handleAddItem = (item: CartItem) => {
@@ -133,9 +124,7 @@ const ProductCard = ({
           {name}
         </h3>
         <div className="text-right">
-          <p className="font-bold">
-            {getFinalProductPrice(price, discountPercentage)}
-          </p>
+          <p className="font-bold">{formatPrice(price, discountPercentage)}</p>
         </div>
       </div>
       <p className="mt-1 text-sm text-gray-500">{category}</p>

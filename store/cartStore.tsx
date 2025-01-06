@@ -1,3 +1,4 @@
+import { Decimal } from "@prisma/client/runtime/library";
 import { create } from "zustand";
 
 // Definimos la interfaz para un item del carrito
