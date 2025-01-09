@@ -8,7 +8,7 @@ import useCartStore from "@/store/cartStore";
 
 interface CartItemProps {
   id: string;
-  name: string;
+  name?: string;
   price: number;
   quantity: number;
   img_url?: string | null;
@@ -49,7 +49,7 @@ export const CartItem: React.FC<CartItemProps> = ({
                     ? img_url
                     : "https://placehold.co/600x400?text=No+Image"
                 }
-                alt={name}
+                alt={name ? name : "Product Image"}
                 layout="fill"
                 objectFit="cover"
                 className="transition-transform duration-300 ease-in-out group-hover:scale-110"
