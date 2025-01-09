@@ -1,7 +1,7 @@
-import Navbar from "@/components/layout/navbar";
+import Navbar from "@/components/layout/navigation/navbar";
 import { cn } from "@/lib/utils";
 import { Fragment } from "react";
-import Footer from "@/components/layout/footer";
+import Footer from "@/components/layout/navigation/footer";
 
 export default function Layout({
   children,

@@ -2,8 +2,13 @@ import {
   createProductsHandler,
   getFilteredProductsHandler,
   getLatestProductsHandler,
+  getProductBySlugHandler,
 } from "./products-controller";
-import { createProductSchema, productsFilterQuery } from "./products-schema";
+import {
+  createProductSchema,
+  productsFilterQuery,
+  productBySlugSchema,
+} from "./products-schema";
 import { t } from "@/lib/trpc-server";
 
 const productsRouter = t.router({
@@ -14,6 +19,9 @@ const productsRouter = t.router({
   getFilteredProducts: t.procedure
     .input(productsFilterQuery)
     .query(({ input }) => getFilteredProductsHandler({ filterQuery: input })),
+  getProductBySlug: t.procedure
+    .input(productBySlugSchema)
+    .query(({ input }) => getProductBySlugHandler({ product_key: input })),
 });
 
 export default productsRouter;

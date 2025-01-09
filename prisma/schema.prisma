@@ -8,162 +8,107 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-model cart_items {
-  id         BigInt    @id @default(autoincrement())
-  cart_id    BigInt?
-  variant_id BigInt?
-  quantity   Int
-  carts      carts?    @relation(fields: [cart_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  variants   variants? @relation(fields: [variant_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
-  @@index([variant_id], map: "idx_cart_items_variant_id")
-}
-
-model carts {
-  id         BigInt       @id @default(autoincrement())
-  user_id    String?
-  created_at DateTime?    @default(now()) @db.Timestamptz(6)
-  cart_items cart_items[]
-  users      users?       @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
-  @@index([user_id], map: "idx_carts_user_id")
-}
-
-model categories {
-  id       BigInt     @id @default(autoincrement())
-  name     String
-  img_url  String?
-  products products[]
-}
-
-model event_categories {
-  id      BigInt   @id @default(autoincrement())
-  name    String
-  img_url String?
-  events  events[]
-}
-
 model events {
-  id               BigInt            @id @default(autoincrement())
-  name             String
-  description      String?
-  date             DateTime?         @db.Timestamptz(6)
-  cover_image      String?
-  category_id      BigInt?
-  location_id      BigInt?
-  event_categories event_categories? @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  locations        locations?        @relation(fields: [location_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id                String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name              String
+  slug              String
+  description       String
+  img_url           String
+  event_date        DateTime         @db.Timestamp(6)
+  cover_price       Decimal          @db.Decimal
+  event_location_id String           @db.Uuid
+  event_category_id String           @db.Uuid
+  event_categories  event_categories @relation(fields: [event_category_id], references: [id])
+  locations         locations        @relation(fields: [event_location_id], references: [id])
 }
 
 model locations {
-  id      BigInt   @id @default(autoincrement())
-  name    String
+  id      String   @id(map: "location_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name    String   @unique(map: "location_name_key")
   address String
   events  events[]
 }
 
-model order_audit {
-  id                 BigInt    @id @default(autoincrement())
-  order_id           BigInt?
-  changed_at         DateTime? @default(now()) @db.Timestamptz(6)
-  change_description String?
-  orders             orders?   @relation(fields: [order_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-}
-
 model order_items {
-  id         BigInt    @id @default(autoincrement())
-  order_id   BigInt?
-  variant_id BigInt?
-  quantity   Int
-  price      Decimal   @db.Decimal(10, 2)
-  orders     orders?   @relation(fields: [order_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  variants   variants? @relation(fields: [variant_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
-  @@index([variant_id], map: "idx_order_items_variant_id")
+  id       String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  quantity BigInt
+  price    Decimal @db.Decimal
+  order_id String  @db.Uuid
+  user_id  String
+  orders   orders  @relation(fields: [order_id], references: [id])
+  users    users   @relation(fields: [user_id], references: [id])
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model orders {
-  id               BigInt        @id @default(autoincrement())
-  user_id          String?
-  order_date       DateTime?     @default(now()) @db.Timestamptz(6)
-  status           String?
-  total_amount     Decimal       @db.Decimal(10, 2)
+  id               String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  total_amount     Decimal       @db.Decimal
+  order_date       DateTime      @db.Timestamp(6)
+  status           String
   shipping_address String?
-  order_audit      order_audit[]
+  order_user_id    String
   order_items      order_items[]
-  users            users?        @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
-  @@index([user_id], map: "idx_orders_user_id")
-}
-
-model price_history {
-  id         BigInt    @id @default(autoincrement())
-  variant_id BigInt?
-  price      Decimal   @db.Decimal(10, 2)
-  start_date DateTime? @default(now()) @db.Timestamptz(6)
-  end_date   DateTime? @db.Timestamptz(6)
-  variants   variants? @relation(fields: [variant_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users            users         @relation(fields: [order_user_id], references: [id])
 }
 
 model products {
-  id                                                             BigInt             @id @default(autoincrement())
-  name                                                           String
-  description                                                    String?
-  category_id                                                    BigInt?
-  base_price                                                     Decimal            @db.Decimal(10, 2)
-  base_cost                                                      Decimal            @db.Decimal(10, 2)
-  categories                                                     categories?        @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  related_products_related_products_product_idToproducts         related_products[] @relation("related_products_product_idToproducts")
-  related_products_related_products_related_product_idToproducts related_products[] @relation("related_products_related_product_idToproducts")
-  variants                                                       variants[]
-}
-
-model related_products {
-  id                                                     BigInt    @id @default(autoincrement())
-  product_id                                             BigInt?
-  related_product_id                                     BigInt?
-  products_related_products_product_idToproducts         products? @relation("related_products_product_idToproducts", fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  products_related_products_related_product_idToproducts products? @relation("related_products_related_product_idToproducts", fields: [related_product_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id                  String              @id(map: "product_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  created_at          DateTime            @default(now()) @db.Timestamptz(6)
+  name                String
+  slug                String
+  description         String
+  cost                Decimal             @db.Decimal
+  price               Decimal             @db.Decimal
+  sizes               String[]
+  colors              String[]
+  stock               BigInt
+  status              String
+  img_url             String
+  discount_start_date DateTime?           @db.Timestamp(6)
+  discount_end_date   DateTime?           @db.Timestamp(6)
+  product_category_id String?             @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  has_discount        Boolean
+  discount            Int                 @db.SmallInt
+  product_categories  product_categories? @relation(fields: [product_category_id], references: [id], onDelete: Restrict, map: "product_product_category_id_fkey")
+  reviews             reviews[]
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model reviews {
-  id         BigInt    @id @default(autoincrement())
-  variant_id BigInt?
-  review     String?
-  rating     Int?
-  variants   variants? @relation(fields: [variant_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id                String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  rating            BigInt
+  comment           String?
+  created_at        DateTime @default(now()) @db.Timestamptz(6)
+  review_user_id    String
+  review_product_id String   @db.Uuid
+  products          products @relation(fields: [review_product_id], references: [id])
+  users             users    @relation(fields: [review_user_id], references: [id])
 }
 
 model users {
-  id      String   @id
-  name    String
-  email   String   @unique
-  phone   String?
-  address String?
-  carts   carts[]
-  orders  orders[]
+  id          String        @id
+  fullname    String
+  email       String
+  phone       String?
+  address     String?
+  order_items order_items[]
+  orders      orders[]
+  reviews     reviews[]
 }
 
-/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
-model variants {
-  id                  BigInt          @id @default(autoincrement())
-  product_id          BigInt?
-  colors              String[]
-  sizes               String[]
-  price               Decimal         @db.Decimal(10, 2)
-  cost                Decimal         @db.Decimal(10, 2)
-  discount            Decimal?        @db.Decimal(5, 2)
-  discount_start_date DateTime?       @db.Timestamptz(6)
-  discount_end_date   DateTime?       @db.Timestamptz(6)
-  permanent_discount  Boolean?        @default(false)
-  status              String?
-  stock               Int?
-  image               String?
-  cart_items          cart_items[]
-  order_items         order_items[]
-  price_history       price_history[]
-  reviews             reviews[]
-  products            products?       @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+model event_categories {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug        String
+  name        String
+  description String?
+  events      events[]
+}
+
+model product_categories {
+  id          String     @id(map: "product_category_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug        String
+  name        String
+  description String?
+  img_url     String
+  products    products[]
 }

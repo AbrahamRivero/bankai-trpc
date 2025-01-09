@@ -1,17 +1,20 @@
-import prisma from "@/prisma/prisma-client";
 import { TRPCError } from "@trpc/server";
 import { CreateCategoryInput } from "./categories-schema";
+import prisma from "@/prisma/prisma-client";
 
 export const createCategoriesHandler = async ({
   input,
 }: {
   input: CreateCategoryInput;
 }) => {
-  const { name } = input;
+  const { name, slug, description, img_url } = input;
   try {
-    const category = await prisma.categories.create({
+    const category = await prisma.product_categories.create({
       data: {
         name,
+        slug,
+        description,
+        img_url,
       },
     });
 
@@ -26,7 +29,7 @@ export const createCategoriesHandler = async ({
 
 export const getCategoriesHandler = async () => {
   try {
-    const categories = await prisma.categories.findMany();
+    const categories = await prisma.product_categories.findMany();
 
     return categories;
   } catch (err: any) {
@@ -37,25 +40,26 @@ export const getCategoriesHandler = async () => {
   }
 };
 
-export const getCategoriesByIdHandler = async ({ id }: { id: number }) => {
+export const getCategoryBySlugHandler = async ({ slug }: { slug: string }) => {
   try {
-    const category = await prisma.categories.findFirst({
-      where: { id: { equals: id } },
+    const category = await prisma.product_categories.findFirst({
+      where: { slug: { equals: slug } },
       select: {
         name: true,
         products: {
           select: {
             id: true,
             name: true,
+            slug: true,
             description: true,
-            categories: { select: { name: true } },
-            variants: {
+            img_url: true,
+            price: true,
+            discount: true,
+            has_discount: true,
+            discount_end_date: true,
+            product_categories: {
               select: {
-                id: true,
-                image: true,
-                price: true,
-                discount: true,
-                discount_end_date: true,
+                name: true,
               },
             },
           },
@@ -63,7 +67,15 @@ export const getCategoriesByIdHandler = async ({ id }: { id: number }) => {
       },
     });
 
-    return category;
+    const categoryWithFormattedProducts = {
+      ...category,
+      products: category?.products.map((product) => ({
+        ...product,
+        price: Number(product.price),
+      })),
+    };
+
+    return categoryWithFormattedProducts;
   } catch (err: any) {
     throw new TRPCError({
       code: "INTERNAL_SERVER_ERROR",

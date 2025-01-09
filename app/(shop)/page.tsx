@@ -4,6 +4,7 @@ import Hydrate from "@/lib/hydrate-client";
 import Banner from "@/components/banner";
 import Categories from "@/components/categories";
 import LatestProducts from "@/components/latest-products";
+import LatestEvents from "@/components/events-section";
 
 export default async function Home() {
   const helpers = createSSRHelper();
@@ -19,9 +20,8 @@ export default async function Home() {
           <Categories />
 
           <LatestProducts />
-          {/* 
 
-          <Events /> */}
+          <LatestEvents />
         </main>
       </Hydrate>
     </div>

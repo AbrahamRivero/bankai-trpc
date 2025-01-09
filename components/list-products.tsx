@@ -2,14 +2,13 @@
 
 import { trpc } from "@/lib/trpc";
 import { buttonVariants } from "./ui/button";
-import FilterHeading from "./filter-heading";
-import ProductCard from "./product-card";
-import Link from "next/link";
-import ProductCardSkeleton from "./product-card-skeleton";
-import Pagination from "./products-pagination";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ProductsFilterQueryInput } from "@/server/products/products-schema";
+import ProductCard from "./product-card";
+import ProductCardSkeleton from "./product-card-skeleton";
+import Pagination from "./products-pagination";
+import Link from "next/link";
 
 export default function ListProducts({
   initialParams,
@@ -26,7 +25,7 @@ export default function ListProducts({
       query: searchParams.get("query") || undefined,
       sizes: searchParams.getAll("sizes"),
       colors: searchParams.getAll("colors"),
-      category_id: searchParams.getAll("category_id"),
+      category_slug: searchParams.get("category_slug") || undefined,
     };
     setCurrentParams(newParams);
   }, [searchParams]);
@@ -38,12 +37,10 @@ export default function ListProducts({
 
   return (
     <>
-      <FilterHeading />
-
       {isLoading ? (
         <>
-          <div className="mt-6 grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 sm:gap-y-10 lg:grid-cols-4">
-            {[...Array(6)].map((_, index) => (
+          <div className="mt-6 grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 sm:gap-y-10 lg:grid-cols-3">
+            {[...Array(3)].map((_, index) => (
               <ProductCardSkeleton key={index} />
             ))}
           </div>
@@ -53,21 +50,30 @@ export default function ListProducts({
         </>
       ) : data && data.results > 0 ? (
         <>
-          <div className="mt-6 grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 sm:gap-y-10 lg:grid-cols-4">
-            {data.products.map((product) =>
-              product.variants.map((variant) => (
+          <div className="mt-6 grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 sm:gap-y-10 lg:grid-cols-3">
+            {data.products.map(
+              ({
+                id,
+                name,
+                slug,
+                img_url,
+                price,
+                discount,
+                discount_end_date,
+                product_categories,
+              }) => (
                 <ProductCard
-                  key={variant.id}
-                  variantId={variant.id}
-                  name={product.name}
-                  href={`/products/${product.id}/${variant.id}`}
-                  category={product.categories?.name}
-                  image_url={variant.image}
-                  price={Number(variant.price)}
-                  discountPercentage={Number(variant.discount)}
-                  discountEndDate={variant.discount_end_date}
+                  key={id}
+                  id={id}
+                  name={name}
+                  href={`/products/${slug}`}
+                  category={product_categories?.name}
+                  img_url={img_url}
+                  price={price}
+                  discountPercentage={discount}
+                  discountEndDate={discount_end_date}
                 />
-              ))
+              )
             )}
           </div>
           <div className="flex justify-center mt-6 mb-10">

@@ -11,7 +11,7 @@ const UserAccountNav = () => {
           <UserButton.Link
             label="Dashboard"
             labelIcon={<AppWindow className="text-blue-600 h-4 w-4 mr-1.5" />}
-            href="/dashboard"
+            href="/admin"
           />
           <UserButton.Action label="manageAccount" />
         </UserButton.MenuItems>

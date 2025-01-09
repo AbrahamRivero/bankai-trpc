@@ -1,7 +1,7 @@
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
-import { AdminSidebar } from "../../components/layout/admin/admin-sidebar";
+import { AdminSidebar } from "../../components/layout/navigation/admin/admin-sidebar";
 
-import AdminHeader from "@/components/layout/admin/header";
+import AdminHeader from "@/components/layout/navigation/admin/header";
 
 export default function Layout({
   children,

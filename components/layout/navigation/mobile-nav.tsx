@@ -8,7 +8,7 @@ import { SignedOut, SignInButton } from "@clerk/nextjs";
 import { ArrowRight, Menu, Search, X } from "lucide-react";
 import Link from "next/link";
 import UserAccountNav from "./user-account-nav";
-import { Input } from "../ui/input";
+import { Input } from "../../ui/input";
 import Image from "next/image";
 
 const MobileNav = ({ isAuth }: { isAuth: string | null }) => {

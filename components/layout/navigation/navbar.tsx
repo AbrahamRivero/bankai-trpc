@@ -3,8 +3,6 @@
 import {
   Search,
   ShoppingBag,
-  Heart,
-  User,
   Menu,
   Home,
   ShoppingCart,
@@ -14,7 +12,6 @@ import {
   LogIn,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -23,13 +20,15 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Separator } from "../ui/separator";
-import Image from "next/image";
-import { useCartStore } from "@/store/cartStore";
+import { Separator } from "../../ui/separator";
 import { useState } from "react";
-import CartSheet from "../cart-sheet";
 import { SignedOut, SignInButton, useAuth } from "@clerk/nextjs";
+import CartSheet from "../../cart-sheet";
 import UserAccountNav from "./user-account-nav";
+import Link from "next/link";
+import Form from "next/form";
+import Image from "next/image";
+import useCartStore from "@/store/cartStore";
 
 export default function Navbar() {
   const navLinks = [
@@ -37,7 +36,7 @@ export default function Navbar() {
     { href: "/products", label: "Productos", icon: ShoppingBag },
     { href: "/about", label: "Sobre nosotros", icon: Info },
     { href: "/contact", label: "Contacto", icon: Phone },
-    { href: "/events", label: "Eventos", icon: BookOpen },
+    /* { href: "/events", label: "Eventos", icon: BookOpen }, */
   ];
 
   const { items } = useCartStore();
@@ -113,10 +112,6 @@ export default function Navbar() {
                     <CartSheet />
                   </SheetContent>
                 </Sheet>
-                <button className="flex items-center text-primary-foreground hover:text-accent transition-colors">
-                  <Heart className="h-5 w-5 mr-4" />
-                  <span>Favoritos</span>
-                </button>
               </div>
             </SheetContent>
           </Sheet>
@@ -124,11 +119,14 @@ export default function Navbar() {
           {/* Search Bar */}
           <div className="flex flex-1 max-w-md mx-4">
             <div className="relative w-full">
-              <Input
-                className="w-full bg-gray-200 border-primary-foreground/20 pl-10 pr-4 py-2 text-primary placeholder:text-primary/65 focus-visible:ring-2 focus-visible:ring-accent transition-all"
-                placeholder="Buscar producto..."
-                type="search"
-              />
+              <Form action="/products">
+                <Input
+                  type="text"
+                  name="query"
+                  placeholder="Buscar producto..."
+                  className="w-full bg-gray-200 border-primary-foreground/20 pl-10 pr-4 py-2 text-primary placeholder:text-primary/65 focus-visible:ring-2 focus-visible:ring-accent transition-all"
+                />
+              </Form>
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-primary/65" />
             </div>
           </div>
@@ -158,7 +156,7 @@ export default function Navbar() {
                       size="icon"
                       className="text-primary hover:text-primary/65 transition-colors relative"
                     >
-                      <ShoppingBag className="h-6 w-6" />
+                      <ShoppingCart className="h-6 w-6" />
                       {items.length > 0 && (
                         <span className="absolute -top-1 -right-1 bg-accent text-primary/85 text-xs rounded-full w-5 h-5 flex items-center justify-center">
                           {items.length}
@@ -169,23 +167,11 @@ export default function Navbar() {
                   </SheetTrigger>
                   <SheetContent
                     side="right"
-                    className="w-[300px] sm:w-1/4 bg-primary-foreground border-none"
+                    className="w-[300px] sm:w-3/4 bg-primary-foreground border-none p-4"
                   >
                     <CartSheet />
                   </SheetContent>
                 </Sheet>
-
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="text-primary hover:text-primary/65 transition-colors relative"
-                >
-                  <Heart className="h-6 w-6" />
-                  <span className="absolute -top-1 -right-1 bg-accent text-primary/85 text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                    2
-                  </span>
-                  <span className="sr-only">Favorites</span>
-                </Button>
               </div>
             )}
 

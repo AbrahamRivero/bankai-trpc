@@ -1,45 +1,42 @@
+import { cn } from "@/lib/utils";
 import { createSSRHelper } from "@/app/api/trpc/trpc-router";
 import { dehydrate } from "@tanstack/react-query";
 import ListProducts from "@/components/list-products";
 import Hydrate from "@/lib/hydrate-client";
+import ProductFilteringInterface from "@/components/layout/filters/product-filtering-interface";
 
-export interface SearchParams {
-  query?: string;
-  sizes?: string[];
-  colors?: string[];
-  category_id?: string[];
-}
-
-interface ProductsPageProps {
-  searchParams: SearchParams;
-}
-
-export default async function ProductsPage({ searchParams }: ProductsPageProps) {
-  const { query, sizes, colors, category_id } = searchParams;
+export default async function ProductsPage({
+  params,
+}: {
+  params: Promise<{
+    query?: string;
+    category_slug?: string;
+    colors?: string[] | string;
+    sizes?: string[] | string;
+  }>;
+}) {
+  const { query, category_slug, colors, sizes } = await params;
 
   const helpers = createSSRHelper();
   await helpers.getFilteredProducts.prefetch({
     query,
     sizes,
     colors,
-    category_id,
+    category_slug,
   });
   await helpers.getCategories.prefetch();
 
   return (
-    <div className="bg-background">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="py-24 text-center">
-          <h1 className="text-4xl font-bold tracking-tight">Productos</h1>
-          <p className="mx-auto mt-4 max-w-3xl text-base text-muted-foreground">
-            Navega a través de nuestra amplia gama de productos y encuentra tus
-            favoritos.
-          </p>
+    <div className={cn("min-h-screen font-sans antialiased grainy")}>
+      <ProductFilteringInterface>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <Hydrate state={dehydrate(helpers.queryClient)}>
+            <ListProducts
+              initialParams={{ query, category_slug, colors, sizes }}
+            />
+          </Hydrate>
         </div>
-        <Hydrate state={dehydrate(helpers.queryClient)}>
-          <ListProducts initialParams={searchParams} />
-        </Hydrate>
-      </div>
+      </ProductFilteringInterface>
     </div>
   );
 }

@@ -1,15 +1,17 @@
-import { Heart, Link, ShoppingCart } from "lucide-react";
+import { Link, ShoppingCart } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import NextLink from "next/link";
 import DiscountBadge from "./discount-badge";
 import CountdownTimer from "./countdown-timer";
-import { useCartStore } from "@/store/cartStore";
+import useCartStore, { CartItem } from "@/store/cartStore";
+import { formatPrice } from "../lib/utils";
+import { Decimal } from "@prisma/client/runtime/library";
 
 interface ProductCardProps {
   name: string;
-  variantId: bigint;
+  id: string;
   href: string;
-  image_url: string | null;
+  img_url: string | null;
   price: number;
   category?: string;
   discountPercentage: number;
@@ -17,35 +19,33 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({
+  id,
   name,
-  variantId,
   href,
-  image_url,
+  img_url,
   category,
   price,
   discountPercentage,
   discountEndDate,
 }: ProductCardProps) => {
-  const getFinalProductPrice = (price: number, discountPercentage?: number) => {
-    if (!discountPercentage) return price;
+  const { addItem } = useCartStore();
 
-    if (discountPercentage > 100) return 0;
-
-    const discountAmount = (price * discountPercentage) / 100;
-    const finalPrice = price - discountAmount;
-    return finalPrice;
+  const handleAddItem = (item: CartItem) => {
+    addItem({
+      id: item.id,
+      name: item.name,
+      price: item.price,
+      quantity: 1,
+      img_url: item.img_url,
+    });
   };
-
-  const addItem = useCartStore((state) => state.addItem);
 
   return (
     <div className="group relative">
       <div className="relative aspect-h-3 aspect-w-4 overflow-hidden rounded-lg bg-gray-100">
         <img
           alt={name}
-          src={
-            image_url ? image_url : "https://placehold.co/600x400?text=No+Image"
-          }
+          src={img_url ? img_url : "https://placehold.co/600x400?text=No+Image"}
           className="object-cover object-center"
         />
         {discountPercentage > 0 && (
@@ -65,24 +65,18 @@ const ProductCard = ({
               variant="secondary"
               aria-label="Add to cart"
               onClick={() =>
-                addItem({
-                  id: variantId,
-                  name: name,
-                  price: price,
+                handleAddItem({
+                  id,
+                  name,
+                  price,
                   quantity: 1,
+                  img_url,
                 })
               }
             >
               <ShoppingCart className="h-4 w-4" />
             </Button>
             <div className="flex space-x-2">
-              <Button
-                size="icon"
-                variant="secondary"
-                aria-label="Add to favorites"
-              >
-                <Heart className="h-4 w-4" />
-              </Button>
               <NextLink
                 href={href}
                 className={buttonVariants({
@@ -97,17 +91,23 @@ const ProductCard = ({
           </div>
         </div>
         <div className="absolute bottom-2 left-2 right-2 z-20 hidden justify-between opacity-0 transition-opacity md:flex md:group-hover:opacity-100">
-          <Button size="icon" variant="secondary" aria-label="Add to cart">
+          <Button
+            size="icon"
+            variant="secondary"
+            aria-label="Add to cart"
+            onClick={() =>
+              handleAddItem({
+                id,
+                name,
+                price,
+                quantity: 1,
+                img_url,
+              })
+            }
+          >
             <ShoppingCart className="h-4 w-4" />
           </Button>
           <div className="flex space-x-2">
-            <Button
-              size="icon"
-              variant="secondary"
-              aria-label="Add to favorites"
-            >
-              <Heart className="h-4 w-4" />
-            </Button>
             <NextLink
               href={href}
               className={buttonVariants({ size: "icon", variant: "secondary" })}
@@ -124,9 +124,7 @@ const ProductCard = ({
           {name}
         </h3>
         <div className="text-right">
-          <p className="font-bold">
-            {getFinalProductPrice(price, discountPercentage)}
-          </p>
+          <p className="font-bold">{formatPrice(price, discountPercentage)}</p>
         </div>
       </div>
       <p className="mt-1 text-sm text-gray-500">{category}</p>
