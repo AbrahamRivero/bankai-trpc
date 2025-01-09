@@ -10,14 +10,7 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/ui/sheet";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   Accordion,
   AccordionContent,
@@ -30,14 +23,6 @@ import { FilterSort } from "./filter-sort";
 import { trpc } from "@/lib/trpc";
 import { useRouter, useSearchParams } from "next/navigation";
 import { filters } from "./constants/filter-constants";
-
-const sortOptions = [
-  { name: "Most Popular", href: "#", current: true },
-  { name: "Best Rating", href: "#", current: false },
-  { name: "Newest", href: "#", current: false },
-  { name: "Price: Low to High", href: "#", current: false },
-  { name: "Price: High to Low", href: "#", current: false },
-];
 
 export default function ProductFilteringInterface({
   children,
@@ -93,29 +78,30 @@ export default function ProductFilteringInterface({
                     <AccordionTrigger>Categorías</AccordionTrigger>
                     <AccordionContent>
                       <div className="space-y-4">
-                        {data?.map((option) => (
-                          <div key={option.id} className="flex items-center">
-                            <Checkbox
-                              id={`filter-mobile-${option.id}-${option.name}`}
-                              checked={searchParams
-                                .getAll("category_slug")
-                                .includes(String(option.slug))}
-                              onCheckedChange={(checked: string | boolean) =>
-                                handleFilterChange(
-                                  "category_slug",
-                                  String(option.slug),
-                                  checked
-                                )
-                              }
-                            />
-                            <label
-                              htmlFor={`filter-mobile-${option.id}-${option.name}`}
-                              className="ml-3 text-sm font-medium"
-                            >
-                              {option.name}
-                            </label>
-                          </div>
-                        ))}
+                        {data &&
+                          data.map((option) => (
+                            <div key={option.id} className="flex items-center">
+                              <Checkbox
+                                id={`filter-mobile-${option.id}-${option.name}`}
+                                checked={searchParams
+                                  .getAll("category_slug")
+                                  .includes(String(option.slug))}
+                                onCheckedChange={(checked: string | boolean) =>
+                                  handleFilterChange(
+                                    "category_slug",
+                                    String(option.slug),
+                                    checked
+                                  )
+                                }
+                              />
+                              <label
+                                htmlFor={`filter-mobile-${option.id}-${option.name}`}
+                                className="ml-3 text-sm font-medium"
+                              >
+                                {option.name}
+                              </label>
+                            </div>
+                          ))}
                       </div>
                     </AccordionContent>
                   </AccordionItem>
@@ -196,29 +182,30 @@ export default function ProductFilteringInterface({
                     <AccordionTrigger>Categorías</AccordionTrigger>
                     <AccordionContent>
                       <div className="space-y-4">
-                        {data?.map((option) => (
-                          <div key={option.id} className="flex items-center">
-                            <Checkbox
-                              id={`filter-mobile-${option.id}-${option.name}`}
-                              checked={searchParams
-                                .getAll("category_slug")
-                                .includes(String(option.slug))}
-                              onCheckedChange={(checked: string | boolean) =>
-                                handleFilterChange(
-                                  "category_slug",
-                                  String(option.slug),
-                                  checked
-                                )
-                              }
-                            />
-                            <label
-                              htmlFor={`filter-mobile-${option.id}-${option.name}`}
-                              className="ml-3 text-sm font-medium"
-                            >
-                              {option.name}
-                            </label>
-                          </div>
-                        ))}
+                        {data &&
+                          data.map((option) => (
+                            <div key={option.id} className="flex items-center">
+                              <Checkbox
+                                id={`filter-mobile-${option.id}-${option.name}`}
+                                checked={searchParams
+                                  .getAll("category_slug")
+                                  .includes(String(option.slug))}
+                                onCheckedChange={(checked: string | boolean) =>
+                                  handleFilterChange(
+                                    "category_slug",
+                                    String(option.slug),
+                                    checked
+                                  )
+                                }
+                              />
+                              <label
+                                htmlFor={`filter-mobile-${option.id}-${option.name}`}
+                                className="ml-3 text-sm font-medium"
+                              >
+                                {option.name}
+                              </label>
+                            </div>
+                          ))}
                       </div>
                     </AccordionContent>
                   </AccordionItem>
