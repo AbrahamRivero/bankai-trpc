@@ -5,8 +5,6 @@ import {
   CreateProductInput,
   ProductsFilterQueryInput,
 } from "./products-schema";
-import { formatPrice } from "@/lib/utils";
-import { format } from "date-fns";
 
 export const createProductsHandler = async ({
   input,
