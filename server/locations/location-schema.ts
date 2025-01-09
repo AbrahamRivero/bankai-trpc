@@ -9,4 +9,9 @@ export const createLocationSchema = object({
   }),
 });
 
+export const searchLocationByIdSchema = object({
+  id: string({ required_error: "Este campo es requerido." }),
+});
+
 export type CreateLocationInput = TypeOf<typeof createLocationSchema>;
+export type SearchLocationByIdInput = TypeOf<typeof searchLocationByIdSchema>;

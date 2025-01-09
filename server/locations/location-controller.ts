@@ -37,3 +37,22 @@ export const getLocationsHandler = async () => {
     });
   }
 };
+
+export const getLocationByIdHandler = async ({ id }: { id: string }) => {
+  try {
+    const location = await prisma.locations.findFirst({
+      where: { id: { equals: id } },
+      select: {
+        name: true,
+        address: true,
+      },
+    });
+
+    return location;
+  } catch (err: any) {
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: err.message,
+    });
+  }
+};
