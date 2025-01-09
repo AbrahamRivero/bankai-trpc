@@ -5,21 +5,17 @@ import ListProducts from "@/components/list-products";
 import Hydrate from "@/lib/hydrate-client";
 import ProductFilteringInterface from "@/components/layout/filters/product-filtering-interface";
 
-export interface SearchParams {
-  query?: string;
-  sizes?: string[];
-  colors?: string[];
-  category_slug?: string[];
-}
-
-interface ProductsPageProps {
-  searchParams: SearchParams;
-}
-
 export default async function ProductsPage({
-  searchParams,
-}: ProductsPageProps) {
-  const { query, sizes, colors, category_slug } = await searchParams;
+  params,
+}: {
+  params: Promise<{
+    query?: string;
+    category_slug?: string;
+    colors?: string[] | string;
+    sizes?: string[] | string;
+  }>;
+}) {
+  const { query, category_slug, colors, sizes } = await params;
 
   const helpers = createSSRHelper();
   await helpers.getFilteredProducts.prefetch({
@@ -35,7 +31,9 @@ export default async function ProductsPage({
       <ProductFilteringInterface>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <Hydrate state={dehydrate(helpers.queryClient)}>
-            <ListProducts initialParams={searchParams} />
+            <ListProducts
+              initialParams={{ query, category_slug, colors, sizes }}
+            />
           </Hydrate>
         </div>
       </ProductFilteringInterface>

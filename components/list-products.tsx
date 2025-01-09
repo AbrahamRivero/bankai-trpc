@@ -25,7 +25,7 @@ export default function ListProducts({
       query: searchParams.get("query") || undefined,
       sizes: searchParams.getAll("sizes"),
       colors: searchParams.getAll("colors"),
-      category_slug: searchParams.getAll("category_slug") || undefined,
+      category_slug: searchParams.get("category_slug") || undefined,
     };
     setCurrentParams(newParams);
   }, [searchParams]);

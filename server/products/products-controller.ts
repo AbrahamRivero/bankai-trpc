@@ -101,7 +101,7 @@ export const getFilteredProductsHandler = async ({
   filterQuery: ProductsFilterQueryInput;
 }) => {
   try {
-    const { category_slug, colors, query, sizes } = filterQuery;
+    const { category_slug, colors, query, sizes } = await filterQuery;
 
     const whereClause: any = {};
 
@@ -122,11 +122,11 @@ export const getFilteredProductsHandler = async ({
 
     if (
       category_slug &&
-      Array.isArray(category_slug) &&
-      category_slug.length > 0
+      typeof category_slug === "string" &&
+      category_slug.trim() !== ""
     ) {
-      whereClause.categories = {
-        slug: { in: category_slug },
+      whereClause.product_categories = {
+        slug: { contains: category_slug, mode: "insensitive" },
       };
     }
 

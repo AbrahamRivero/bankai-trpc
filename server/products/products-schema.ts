@@ -82,7 +82,7 @@ export const productsFilterQuery = object({
   query: string().optional(),
   sizes: union([array(string()), string()]).optional(),
   colors: union([array(string()), string()]).optional(),
-  category_slug: union([array(string()), string()]).optional(),
+  category_slug: string().optional(),
 });
 
 export type CreateProductInput = TypeOf<typeof createProductSchema>;

@@ -6,9 +6,9 @@ import ProductOverview from "@/components/product-overview";
 export default async function ProductPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const { slug } = await params;
+  const slug = (await params).slug;
 
   const helpers = createSSRHelper();
   await helpers.getProductBySlug.prefetch({ slug });
