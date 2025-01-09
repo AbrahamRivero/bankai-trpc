@@ -61,8 +61,8 @@ const CreateEventForm = () => {
       name: "",
       description: "",
       cover_price: 0,
-      location_id: "",
-      category_id: "",
+      event_location_id: "",
+      event_category_id: "",
     },
   });
 
@@ -70,9 +70,7 @@ const CreateEventForm = () => {
     onSettled: () => form.reset(),
   });
 
-  const { data: categories } = trpc.getCategoriesByType.useQuery({
-    type: "event",
-  });
+  const { data: categories } = trpc.getEventCategories.useQuery();
   const { data: locations } = trpc.getLocations.useQuery();
 
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
@@ -83,12 +81,13 @@ const CreateEventForm = () => {
         onSubmit={form.handleSubmit((data: z.infer<typeof createEventSchema>) =>
           mutate({
             name: data.name,
+            slug: data.slug,
             description: data.description,
-            event_img: data.event_img,
+            img_url: data.img_url,
             cover_price: data.cover_price,
-            location_id: data.location_id,
-            category_id: data.category_id,
-            date: data.date,
+            event_location_id: data.event_location_id,
+            event_category_id: data.event_category_id,
+            event_date: data.event_date,
           })
         )}
         className="mb-4"
@@ -151,7 +150,7 @@ const CreateEventForm = () => {
                       <div className="grid gap-3">
                         <FormField
                           control={form.control}
-                          name="event_img"
+                          name="img_url"
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>Imagen (URL)</FormLabel>
@@ -172,7 +171,7 @@ const CreateEventForm = () => {
                       <div className="grid gap-3">
                         <FormField
                           control={form.control}
-                          name="category_id"
+                          name="event_category_id"
                           render={({ field }) => (
                             <FormItem className="flex flex-col">
                               <FormLabel>Categoría</FormLabel>
@@ -211,7 +210,7 @@ const CreateEventForm = () => {
                                             key={category.id}
                                             onSelect={() => {
                                               form.setValue(
-                                                "category_id",
+                                                "event_category_id",
                                                 category.id
                                               );
                                             }}
@@ -240,7 +239,7 @@ const CreateEventForm = () => {
                       <div className="grid gap-3">
                         <FormField
                           control={form.control}
-                          name="location_id"
+                          name="event_location_id"
                           render={({ field }) => (
                             <FormItem className="flex flex-col">
                               <FormLabel>Localización</FormLabel>
@@ -279,7 +278,7 @@ const CreateEventForm = () => {
                                             key={location.id}
                                             onSelect={() => {
                                               form.setValue(
-                                                "location_id",
+                                                "event_location_id",
                                                 location.id
                                               );
                                             }}
@@ -349,7 +348,7 @@ const CreateEventForm = () => {
                       <div className="grid gap-3">
                         <FormField
                           control={form.control}
-                          name="date"
+                          name="event_date"
                           render={({ field }) => (
                             <FormItem className="flex flex-col justify-end">
                               <FormLabel>Fecha y Hora</FormLabel>
