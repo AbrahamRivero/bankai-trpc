@@ -13,7 +13,7 @@ const eventsRouter = t.router({
     .mutation(({ input }) => createEventHandler({ input })),
   getEvents: t.procedure.query(() => getEventsHandler()),
   getLatestEvents: t.procedure.query(() => getLatestEventsHandler()),
-  getEventById: t.procedure
+  getEventBySlug: t.procedure
     .input(eventFilterQuery)
     .query(({ input }) => getEventByIdHandler({ eventFilterQuery: input })),
 });
