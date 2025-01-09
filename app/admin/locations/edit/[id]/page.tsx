@@ -2,15 +2,15 @@ import { createSSRHelper } from "@/app/api/trpc/trpc-router";
 import { dehydrate } from "@tanstack/react-query";
 import Hydrate from "@/lib/hydrate-client";
 
-export default async function EditProductPage({
+export default async function EditLocationPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ id: string }>;
 }) {
-  const slug = (await params).slug;
+  const id = (await params).id;
 
   const helpers = createSSRHelper();
-  await helpers.getProductBySlug.prefetch({ slug });
+  await helpers.getLocationsById.prefetch({ id });
 
   return (
     <div className="bg-background">
