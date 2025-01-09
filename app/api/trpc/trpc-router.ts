@@ -1,5 +1,4 @@
 import { t } from "@/lib/trpc-server";
-import userRouter from "@/server/user-route";
 import productsRouter from "@/server/products/products-route";
 import categoriesRouter from "@/server/categories/categories-route";
 import locationsRouter from "@/server/locations/location-route";
@@ -19,7 +18,6 @@ const healthCheckerRouter = t.router({
 });
 
 export const appRouter = t.mergeRouters(
-  userRouter,
   categoriesRouter,
   eventCategoriesRouter,
   productsRouter,
