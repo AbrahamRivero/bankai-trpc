@@ -15,11 +15,11 @@ export const metadata: Metadata = {
     title: "BANKAI Project: ¡Libera tu friki interior!",
     description:
       "BANKAI Project es una tienda virtual donde podrás encontrar todo tipo de artículos vinculados a la cultura friki.",
-    url: "https://your-website.com",
+    url: "https://bankai-project.vercel.app/",
     siteName: "BANKAI Project",
     images: [
       {
-        url: "https://localhost:3000/favicon.svg",
+        url: "https://bankai-project.vercel.app/favicon.svg",
         width: 1200,
         height: 630,
       },
