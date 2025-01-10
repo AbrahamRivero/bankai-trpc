@@ -13,8 +13,7 @@ const Services = () => {
       img_url:
         "https://ucarecdn.com/26ea639e-367f-46af-8ce1-7c081508bff5/cosplayer.png",
       title: "Multiples Métodos de pago",
-      description:
-        "Paga por transferencia o efectivo en cualquier moneda.",
+      description: "Paga por transferencia o efectivo en cualquier moneda.",
     },
     {
       img_url:
@@ -30,7 +29,7 @@ const Services = () => {
     },
   ];
   return (
-    <div className="grid lg:grid-cols-4 gap-6 py-4 px-2 bg-[#fcaa2a]">
+    <div className="grid lg:grid-cols-4 sm:grid-cols-2 gap-6 py-6 px-5 bg-[#fcaa2a]">
       {services.map((service, index) => (
         <ServiceCard
           key={index}
