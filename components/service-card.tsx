@@ -20,7 +20,7 @@ const ServiceCard = ({
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
       viewport={{ once: true }}
-      className="flex items-center gap-4 text-center rounded-lg bg-slate-50 shadow-lg hover:shadow-xl transition-shadow p-2"
+      className="flex flex-col sm:flex-row items-center gap-4 text-center rounded-lg bg-slate-50 shadow-lg hover:shadow-xl transition-shadow sm:p-2 px-2 py-3 "
     >
       <Image
         src={img_url}
@@ -30,7 +30,7 @@ const ServiceCard = ({
         className="object-cover"
       />
 
-      <div className="w-3/4 text-start">
+      <div className="w-full sm:w-3/4 text-center sm:text-start">
         <h3 className="text-base font-semibold mb-2">{title}</h3>
         <p className="text-sm text-muted-foreground">{description}</p>
       </div>

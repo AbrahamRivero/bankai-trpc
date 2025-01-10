@@ -29,7 +29,7 @@ const Services = () => {
     },
   ];
   return (
-    <div className="grid lg:grid-cols-4 sm:grid-cols-2 gap-6 py-6 px-5 bg-[#fcaa2a]">
+    <div className="grid lg:grid-cols-4 grid-cols-2 gap-2 sm:gap-6 py-6 px-5 bg-[#fcaa2a]">
       {services.map((service, index) => (
         <ServiceCard
           key={index}
