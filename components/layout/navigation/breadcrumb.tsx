@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
-import { useUrlSegments } from "@/lib/hooks/use-url-segments";
+import { useUrlSegments } from "@/hooks/use-url-segments";
 
 export function Breadcrumb() {
   const segments = useUrlSegments();
