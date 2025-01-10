@@ -34,9 +34,7 @@ export default function Navbar() {
   const navLinks = [
     { href: "/", label: "Inicio", icon: Home },
     { href: "/products", label: "Productos", icon: ShoppingBag },
-    { href: "/about", label: "Sobre nosotros", icon: Info },
     { href: "/contact", label: "Contacto", icon: Phone },
-    /* { href: "/events", label: "Eventos", icon: BookOpen }, */
   ];
 
   const { items } = useCartStore();
@@ -45,7 +43,7 @@ export default function Navbar() {
   const { isSignedIn } = useAuth();
 
   return (
-    <header className="w-full border-b border-gray-200 bg-white/75 backdrop-blur-lg transition-all sticky top-0 z-50 shadow-lg">
+    <header className="w-full bg-[#fcaa2a]/75 backdrop-blur-lg transition-all shadow-lg">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between gap-4">
           {/* Logo (hidden on mobile) */}
@@ -117,6 +115,20 @@ export default function Navbar() {
             </SheetContent>
           </Sheet>
 
+          {/* Desktop Navigation */}
+
+          <nav className="hidden lg:flex items-center gap-8">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-primary hover:text-primary/65 transition-colors font-medium"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+
           {/* Search Bar */}
           <div className="flex flex-1 max-w-md mx-4">
             <div className="relative w-full">
@@ -131,20 +143,6 @@ export default function Navbar() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-primary/65" />
             </div>
           </div>
-
-          {/* Desktop Navigation */}
-
-          <nav className="hidden lg:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="text-primary hover:text-primary/65 transition-colors font-medium"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
 
           {/* Mobile Cart */}
           <div className="flex items-center gap-4">
