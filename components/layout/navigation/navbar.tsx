@@ -97,7 +97,8 @@ export default function Navbar() {
                 ))}
               </nav>
               <Separator className="my-6 bg-primary-foreground/20" />
-              <div className="flex flex-col gap-6">
+              {/* Desktop Cart */}
+              <div className="flex flex-col lg:hidden gap-6">
                 <Sheet open={isCartOpen} onOpenChange={setIsCartOpen}>
                   <SheetTrigger asChild>
                     <button className="flex items-center text-primary-foreground hover:text-accent transition-colors">
@@ -145,7 +146,7 @@ export default function Navbar() {
             ))}
           </nav>
 
-          {/* Desktop Icons */}
+          {/* Mobile Cart */}
           <div className="flex items-center gap-4">
             {isSignedIn && (
               <div className="hidden lg:flex items-center gap-4">
@@ -167,7 +168,7 @@ export default function Navbar() {
                   </SheetTrigger>
                   <SheetContent
                     side="right"
-                    className="w-[300px] sm:w-3/4 bg-primary-foreground border-none p-4"
+                    className="w-full sm:w-3/4 bg-primary-foreground border-none p-4"
                   >
                     <CartSheet />
                   </SheetContent>
