@@ -20,7 +20,7 @@ const ServiceCard = ({
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
       viewport={{ once: true }}
-      className="flex flex-col sm:flex-row items-center gap-4 text-center rounded-lg bg-slate-50 shadow-lg hover:shadow-xl transition-shadow sm:p-2 px-2 py-3 "
+      className="flex flex-col sm:flex-row items-center gap-4 text-center rounded-lg bg-slate-50 shadow-lg hover:shadow-xl transition-shadow sm:p-4 px-2 py-3 "
     >
       <Image
         src={img_url}
