@@ -83,6 +83,15 @@ export const productsFilterQuery = object({
   sizes: union([array(string()), string()]).optional(),
   colors: union([array(string()), string()]).optional(),
   category_slug: string().optional(),
+  sort: enum_([
+    "price_asc",
+    "price_desc",
+    "name_asc",
+    "name_desc",
+    "newest",
+  ]).optional(),
+  page: coerce.number().int().positive().optional().default(1),
+  limit: coerce.number().int().positive().optional().default(12),
 });
 
 export type CreateProductInput = TypeOf<typeof createProductSchema>;

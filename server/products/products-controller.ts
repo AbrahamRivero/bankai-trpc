@@ -99,7 +99,15 @@ export const getFilteredProductsHandler = async ({
   filterQuery: ProductsFilterQueryInput;
 }) => {
   try {
-    const { category_slug, colors, query, sizes } = await filterQuery;
+    const {
+      category_slug,
+      colors,
+      query,
+      sizes,
+      sort,
+      page = 1,
+      limit = 12,
+    } = await filterQuery;
 
     const whereClause: any = {};
 
@@ -128,6 +136,34 @@ export const getFilteredProductsHandler = async ({
       };
     }
 
+    // Define the orderBy object based on the sort value
+    let orderBy: any = {};
+    switch (sort) {
+      case "price_asc":
+        orderBy.price = "asc";
+        break;
+      case "price_desc":
+        orderBy.price = "desc";
+        break;
+      case "name_asc":
+        orderBy.name = "asc";
+        break;
+      case "name_desc":
+        orderBy.name = "desc";
+        break;
+      case "newest":
+        orderBy.created_at = "desc";
+        break;
+      default:
+        // Default sorting, you can adjust this as needed
+        orderBy.created_at = "desc";
+    }
+
+    // Get the total count of products that match the filter
+    const totalProducts = await prisma.products.count({
+      where: whereClause,
+    });
+
     const products = await prisma.products.findMany({
       where: whereClause,
       select: {
@@ -141,7 +177,11 @@ export const getFilteredProductsHandler = async ({
         has_discount: true,
         discount_end_date: true,
         product_categories: { select: { name: true } },
+        created_at: true,
       },
+      orderBy: orderBy,
+      skip: (page - 1) * limit,
+      take: limit,
     });
 
     const formattedProducts = products.map((product) => ({
@@ -149,13 +189,14 @@ export const getFilteredProductsHandler = async ({
       price: Number(product.price),
     }));
 
-    const totalPages = Math.ceil(products.length / 12);
+    const totalPages = Math.ceil(totalProducts / limit);
 
     return {
       status: "success",
-      results: products.length,
+      results: totalProducts,
       products: formattedProducts,
       totalPages,
+      currentPage: page,
     };
   } catch (err: any) {
     throw new TRPCError({

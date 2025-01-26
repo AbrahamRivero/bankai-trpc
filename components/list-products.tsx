@@ -2,45 +2,46 @@
 
 import { trpc } from "@/lib/trpc";
 import { buttonVariants } from "./ui/button";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { ProductsFilterQueryInput } from "@/server/products/products-schema";
+import { useEffect } from "react";
+import type { ProductsFilterQueryInput } from "@/server/products/products-schema";
 import ProductCard from "./product-card";
 import ProductCardSkeleton from "./product-card-skeleton";
 import Pagination from "./products-pagination";
 import Link from "next/link";
+import { useProductStore } from "@/store/useProductStore";
 
-export default function ListProducts({
-  initialParams,
-}: {
-  initialParams: ProductsFilterQueryInput;
-}) {
-  const searchParams = useSearchParams();
-  const [currentParams, setCurrentParams] =
-    useState<ProductsFilterQueryInput>(initialParams);
+export default function ListProducts() {
+  const { category_slug, sizes, colors, sort, page, limit, setPage } =
+    useProductStore();
 
-  // Update params when URL changes
-  useEffect(() => {
-    const newParams: ProductsFilterQueryInput = {
-      query: searchParams.get("query") || undefined,
-      sizes: searchParams.getAll("sizes"),
-      colors: searchParams.getAll("colors"),
-      category_slug: searchParams.get("category_slug") || undefined,
-    };
-    setCurrentParams(newParams);
-  }, [searchParams]);
+  const currentParams: ProductsFilterQueryInput = {
+    category_slug: category_slug || undefined,
+    sizes,
+    colors,
+    sort: sort || undefined,
+    page,
+    limit,
+  };
 
   const { data, isLoading } = trpc.getFilteredProducts.useQuery(currentParams, {
     keepPreviousData: true,
     refetchInterval: 15000,
   });
 
+  useEffect(() => {
+    setPage(1);
+  }, [setPage]);
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
+
   return (
     <>
       {isLoading ? (
         <>
           <div className="mt-6 grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 sm:gap-y-10 lg:grid-cols-3">
-            {[...Array(3)].map((_, index) => (
+            {[...Array(limit)].map((_, index) => (
               <ProductCardSkeleton key={index} />
             ))}
           </div>
@@ -77,7 +78,13 @@ export default function ListProducts({
             )}
           </div>
           <div className="flex justify-center mt-6 mb-10">
-            {data.totalPages > 0 && <Pagination totalPages={data.totalPages} />}
+            {data.totalPages > 0 && (
+              <Pagination
+                totalPages={data.totalPages}
+                currentPage={data.currentPage}
+                onPageChange={handlePageChange}
+              />
+            )}
           </div>
         </>
       ) : (

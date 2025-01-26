@@ -1,9 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
 import { Check, ChevronsUpDown } from "lucide-react";
-
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,28 +17,30 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { sortOptions } from "./constants/filter-constants";
+import { useProductStore } from "@/store/useProductStore";
+
+const sortOptions = [
+  { value: "newest", name: "Más recientes", icon: ChevronsUpDown },
+  { value: "price_asc", name: "Precio: Menor a Mayor", icon: ChevronsUpDown },
+  { value: "price_desc", name: "Precio: Mayor a Menor", icon: ChevronsUpDown },
+  { value: "name_asc", name: "Nombre: A-Z", icon: ChevronsUpDown },
+  { value: "name_desc", name: "Nombre: Z-A", icon: ChevronsUpDown },
+];
 
 export function FilterSort() {
   const [open, setOpen] = useState(false);
-
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
-  const currentSort = searchParams.get("sort");
+  const { sort, setSort } = useProductStore();
 
   const handleSort = (value: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-
-    // Si ya existe un sort, lo reemplazamos
-    if (currentSort?.length) {
-      params.delete("sort");
-    }
-
-    // Añadir el nuevo valor de ordenamiento
-    params.append("sort", value);
-
-    router.push(`?${params.toString()}`);
+    setSort(
+      value as
+        | "price_asc"
+        | "price_desc"
+        | "name_asc"
+        | "name_desc"
+        | "newest"
+        | null
+    );
     setOpen(false);
   };
 
@@ -53,19 +53,17 @@ export function FilterSort() {
           aria-expanded={open}
           className="w-[200px] justify-between"
         >
-          {currentSort
-            ? sortOptions.find((option) => option.value === currentSort)?.name
+          {sort
+            ? sortOptions.find((option) => option.value === sort)?.name
             : "Ordenar por..."}
-          <ChevronsUpDown className="opacity-50" />
+          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[250px] p-0">
+      <PopoverContent className="w-[200px] p-0">
         <Command>
-          <CommandInput placeholder="Ordenar por..." />
+          <CommandInput placeholder="Buscar orden..." />
           <CommandList>
-            <CommandEmpty>
-              No se ha encontrado ese criterio de ordenamiento.
-            </CommandEmpty>
+            <CommandEmpty>No se ha encontrado el criterio.</CommandEmpty>
             <CommandGroup>
               {sortOptions.map((option) => (
                 <CommandItem
@@ -73,14 +71,13 @@ export function FilterSort() {
                   value={option.value}
                   onSelect={() => handleSort(option.value)}
                 >
-                  <option.icon className="mr-2 w-4 h-4" />
-                  {option.name}
                   <Check
                     className={cn(
-                      "ml-auto",
-                      currentSort === option.value ? "opacity-100" : "opacity-0"
+                      "mr-2 h-4 w-4",
+                      sort === option.value ? "opacity-100" : "opacity-0"
                     )}
                   />
+                  {option.name}
                 </CommandItem>
               ))}
             </CommandGroup>
